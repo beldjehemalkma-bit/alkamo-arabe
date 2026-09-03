@@ -93235,14 +93235,16 @@ function renderCase() {
 // ═══════════════════════════════════════════
 // TIMER
 // ═══════════════════════════════════════════
-function startTimer() {
+function startTimer(debutTs) {
   stopTimer();
+  G.tourDebut = debutTs || Date.now();
   G.timeLeft = 180;
   G.timerExpired = false;
   document.getElementById('tmr-exp').classList.remove('show');
   updateTimer();
   G.timer = setInterval(() => {
-    G.timeLeft--;
+    const ecoule = Math.floor((Date.now() - G.tourDebut) / 1000);
+    G.timeLeft = Math.max(0, 180 - ecoule);
     updateTimer();
     if (G.timeLeft === 30) snd('alert');
     if (G.timeLeft <= 0) {
@@ -95383,7 +95385,7 @@ function syncTour(tour, joueurs, scores) {
   afficherIndicateurTour();
 
   if (estMonTour()) {
-    if (!G.timer) startTimer();
+    if (!G.timer) startTimer(tour.debutTour);
     startBgMusic();
   } else {
     stopTimer();
@@ -95642,6 +95644,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       etat: 'en_cours', maquette, duree: duree || 60,
       'tour/joueurActif': 'j1', 'tour/numero': 1,
       'tour/action': 'attente_theme', 'tour/theme': null,
+      'tour/debutTour': Date.now(),
       finPartie: null
     });
   };
@@ -95661,7 +95664,8 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   window.passerAuTourSuivant = function(code, joueurSuivant, numero, lastCaseId) {
     const data = {
       joueurActif: joueurSuivant, numero: numero,
-      action: 'attente_theme', theme: null
+      action: 'attente_theme', theme: null,
+      debutTour: Date.now()
     };
     if (lastCaseId) data.lastCaseId = lastCaseId;
     update(ref(db, 'parties/' + code + '/tour'), data);
