@@ -943,6 +943,7 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
   <div class="ghdr">
     <div class="glogo">ALKAMO</div>
     <div class="tmr-wrap">⏳ <span class="tmr" id="tmr">3:00</span></div>
+    <div id="diag-badge" style="display:none;font-size:.65rem;color:#9ad;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 6px;">Sync 0 / Secours 0</div>
     <div class="partie-timer" id="partie-timer" style="display:none">
       🕐 <span class="partie-tmr" id="partie-tmr">--:--</span>
     </div>
@@ -95375,7 +95376,15 @@ function afficherIndicateurTour() {
   if (drop) drop.style.pointerEvents = monTour ? 'auto' : 'none';
 }
 
-function syncTour(tour, joueurs, scores) {
+function syncTour(tour, joueurs, scores, source) {
+  window._diagSync = window._diagSync || { direct: 0, secours: 0 };
+  window._diagSync[source === 'secours' ? 'secours' : 'direct']++;
+  const dbadge = document.getElementById('diag-badge');
+  if (dbadge) {
+    dbadge.style.display = 'block';
+    dbadge.textContent = 'Sync ' + window._diagSync.direct + ' / Secours ' + window._diagSync.secours;
+  }
+
   if (!tour) return;
   if (typeof G === 'undefined' || !G.players) return;
   const ancienActif = window._joueurActifId;
@@ -95667,7 +95676,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       get(pRef(code)).then(snap => {
         const d = snap.val();
         if (d && d.tour && typeof window.syncTour === 'function') {
-          window.syncTour(d.tour, d.joueurs, d.scores);
+          window.syncTour(d.tour, d.joueurs, d.scores, 'secours');
         }
       }).catch(() => {});
     }, 4000);
