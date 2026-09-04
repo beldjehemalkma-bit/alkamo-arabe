@@ -95387,8 +95387,14 @@ function syncTour(tour, joueurs, scores) {
 
   afficherIndicateurTour();
 
+  // Redémarre le minuteur si ce n'est pas déjà mon tour en cours, ou si
+  // l'horodatage de référence a changé (nouveau tour), pour éviter qu'il
+  // reste figé si un état précédent était incohérent.
+  const minuteurDoitDemarrer = estMonTour() && (!G.timer || G.tourDebut !== tour.debutTour);
+  if (minuteurDoitDemarrer) {
+    startTimer(tour.debutTour);
+  }
   if (estMonTour()) {
-    if (!G.timer) startTimer(tour.debutTour);
     startBgMusic();
   } else {
     stopTimer();
