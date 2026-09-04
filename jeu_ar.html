@@ -94933,6 +94933,7 @@ function startGameEnLigne() {
   renderAll();
   renderHistPanel();
   startPartieTimer();
+  if (window.demarrerPollTourSecours) window.demarrerPollTourSecours(code);
 
   if (estMonTour()) { startTimer(); startBgMusic(); } else { stopTimer(); stopBgMusic(); }
   setTimeout(() => afficherIndicateurTour(), 300);
@@ -95651,6 +95652,24 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     });
   };
 
+  // Filet de sécurité : revérifie périodiquement l'état réel du tour dans
+  // Firebase, au cas où une mise à jour "en direct" ne serait pas arrivée.
+  window.demarrerPollTourSecours = function(code) {
+    if (window._pollTourInterval) clearInterval(window._pollTourInterval);
+    window._pollTourInterval = setInterval(() => {
+      if (!window._partieDemar || !code) return;
+      get(pRef(code)).then(snap => {
+        const d = snap.val();
+        if (d && d.tour && typeof window.syncTour === 'function') {
+          window.syncTour(d.tour, d.joueurs, d.scores);
+        }
+      }).catch(() => {});
+    }, 4000);
+  };
+  window.arreterPollTourSecours = function() {
+    if (window._pollTourInterval) { clearInterval(window._pollTourInterval); window._pollTourInterval = null; }
+  };
+
   window.publierTheme = function(code, t) {
     update(ref(db, 'parties/' + code + '/tour'), { theme: t, action: 'jouer' });
   };
@@ -95698,7 +95717,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
         if (el) el.textContent = Object.values(d.joueurs).map(j => j.nom).join(', ');
       }
       if (d.etat === 'terminee' && window._partieDemar && !window._finPartieRecu) {
-        window._finPartieRecu = true;
+        window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
         if (typeof stopTimer === 'function') stopTimer();
         const fp = d.finPartie || {};
         if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
@@ -95744,7 +95763,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       if (!window._partieDemar) return;
       // Détecter fin de partie
       if (d.etat === 'terminee' && !window._finPartieRecu) {
-        window._finPartieRecu = true;
+        window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
         if (typeof stopTimer === 'function') stopTimer();
         const fp = d.finPartie || {};
         // Afficher notification seulement si c'est l'adversaire qui a fini
@@ -95904,7 +95923,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       // Filtrer par ID joueur (plus fiable que le nom)
       if (d.idJoueur === window._idJoueur) return;
       if (window._finPartieRecu) return;
-      window._finPartieRecu = true;
+      window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
       if (typeof stopTimer === 'function') stopTimer();
       if (typeof stopPartieTimer === 'function') stopPartieTimer();
       if (typeof stopBgMusic === 'function') stopBgMusic();
