@@ -94415,6 +94415,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window._nomAdverse = advUrl;
     if (role === 'createur') {
       if (window.creerPartieEnLigne) window.creerPartieEnLigne(pseudoUrl, codeUrl);
+      if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(codeUrl);
     } else {
       window._idAdverse = 'j1';
       if (window.rejoindrePatie) window.rejoindrePatie(codeUrl, pseudoUrl);
@@ -95278,6 +95279,7 @@ function onlineCreer() {
     document.getElementById('online-step1').style.display = 'none';
     document.getElementById('online-step2').style.display = 'block';
     if (window.ecouterChat) window.ecouterChat(code);
+    if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
   } else {
     alert('Firebase non connecté — vérifiez votre connexion internet');
   }
@@ -95719,20 +95721,12 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   }
 
   window.ecouterPartieCreateur = function(code) {
+    if (window._creListenerActif === code) return; // éviter un double abonnement
+    window._creListenerActif = code;
     onValue(pRef(code), snap => {
       const d = snap.val();
-      if (!d || !window._partieDemar) return;
-      // Détecter fin de partie
-      if (d.etat === 'terminee' && !window._finPartieRecu) {
-        window._finPartieRecu = true;
-        if (typeof stopTimer === 'function') stopTimer();
-        const fp = d.finPartie || {};
-        // Afficher notification seulement si c'est l'adversaire qui a fini
-        if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
-          _afficherNotifFin(fp.par || '?');
-        }
-        return;
-      }
+      if (!d) return;
+      // Détecter l'adversaire dès qu'il rejoint, même avant le lancement de la partie
       if (d.joueurs) {
         const advId = Object.keys(d.joueurs).find(id => id !== window._idJoueur);
         if (advId && d.joueurs[advId]) {
@@ -95746,6 +95740,18 @@ function ajouterMsgTexteLocal(who, texte, moi) {
         }
         if (window._idAdverse && d.scores && d.scores[window._idAdverse] !== undefined)
           window._scoreAdverse = d.scores[window._idAdverse];
+      }
+      if (!window._partieDemar) return;
+      // Détecter fin de partie
+      if (d.etat === 'terminee' && !window._finPartieRecu) {
+        window._finPartieRecu = true;
+        if (typeof stopTimer === 'function') stopTimer();
+        const fp = d.finPartie || {};
+        // Afficher notification seulement si c'est l'adversaire qui a fini
+        if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
+          _afficherNotifFin(fp.par || '?');
+        }
+        return;
       }
       if (d.tour && typeof syncTour === 'function') syncTour(d.tour, d.joueurs, d.scores);
     });
@@ -95983,6 +95989,7 @@ function _executerFinPartie() {
 
   window.salonInviter = function(myNom, targetUid) {
     const code = window.creerPartieEnLigne(myNom);
+    if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
     set(ref(db, 'salon_invites/' + targetUid), { fromNom: myNom, code, ts: Date.now() });
     const unsub = onValue(ref(db, 'parties/' + code + '/joueurs'), snap => {
       const joueurs = snap.val() || {};
