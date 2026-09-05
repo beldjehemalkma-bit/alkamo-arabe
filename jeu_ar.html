@@ -943,7 +943,6 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
   <div class="ghdr">
     <div class="glogo">ALKAMO</div>
     <div class="tmr-wrap">⏳ <span class="tmr" id="tmr">3:00</span></div>
-    <div id="diag-badge" style="display:none;font-size:.65rem;color:#9ad;background:rgba(255,255,255,.08);border-radius:6px;padding:2px 6px;">Sync 0 / Secours 0</div>
     <div class="partie-timer" id="partie-timer" style="display:none">
       🕐 <span class="partie-tmr" id="partie-tmr">--:--</span>
     </div>
@@ -94897,10 +94896,11 @@ function validerMaquette() {
   }
 }
 
-function startGameEnLigne() {
+function startGameEnLigne(debutPartieTs) {
   const nom = window._nomJoueur || 'Joueur';
   const code = window._codePartie || '';
   const estJ1 = window._estCreateur === true;
+  const debutPartieRef = debutPartieTs || Date.now();
 
   G = {
     players: [{ name: nom, score: 0, letters: [], isBot: false }],
@@ -94919,7 +94919,7 @@ function startGameEnLigne() {
   window._finPartieRecu = false;
 
   if (estJ1 && window.demarrerPartieFirebase) {
-    window.demarrerPartieFirebase(code, _maqActive, _dureePartie);
+    window.demarrerPartieFirebase(code, _maqActive, _dureePartie, debutPartieRef);
     if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
     if (window.ecouterChat) window.ecouterChat(code);
   }
@@ -94933,7 +94933,7 @@ function startGameEnLigne() {
   showChatBtn();
   renderAll();
   renderHistPanel();
-  startPartieTimer();
+  startPartieTimer(debutPartieRef);
   if (window.demarrerPollTourSecours) window.demarrerPollTourSecours(code);
 
   if (estMonTour()) { startTimer(); startBgMusic(); } else { stopTimer(); stopBgMusic(); }
@@ -95045,8 +95045,10 @@ function setDureeLibre(val) {
   }
 }
 
-function startPartieTimer() {
-  _partieSecondes = _dureePartie * 60;
+function startPartieTimer(debutPartieTs) {
+  var debutRef = debutPartieTs || Date.now();
+  var dureeTotale = _dureePartie * 60;
+  _partieSecondes = dureeTotale;
   _tempsEcoule = false;
   var el = document.getElementById('partie-timer');
   var tmr = document.getElementById('partie-tmr');
@@ -95055,7 +95057,8 @@ function startPartieTimer() {
   if (el) el.style.display = 'flex';
   updatePartieTimer();
   _partieTimer = setInterval(function() {
-    _partieSecondes--;
+    var ecouleSec = Math.floor((Date.now() - debutRef) / 1000);
+    _partieSecondes = Math.max(0, dureeTotale - ecouleSec);
     updatePartieTimer();
     if (_partieSecondes <= 0) {
       clearInterval(_partieTimer);
@@ -95353,16 +95356,6 @@ function afficherIndicateurTour() {
     }
   }
 
-  if (window._nomAdverse) {
-    let badge = document.getElementById('score-adverse');
-    if (!badge) {
-      badge = document.createElement('div');
-      badge.id = 'score-adverse';
-      badge.style.cssText = 'position:fixed;top:60px;right:10px;padding:4px 12px;border-radius:10px;font-size:.82rem;font-weight:900;background:rgba(0,0,0,.75);color:#fff;z-index:199;pointer-events:none;border:1px solid rgba(200,160,32,.3);';
-      document.body.appendChild(badge);
-    }
-    badge.textContent = window._nomAdverse + ' : ' + (window._scoreAdverse || 0) + ' نقطة';
-  }
 
   ['btn-val','btn-pass','btn-chg-toggle'].forEach(id => {
     const el = document.getElementById(id);
@@ -95376,14 +95369,7 @@ function afficherIndicateurTour() {
   if (drop) drop.style.pointerEvents = monTour ? 'auto' : 'none';
 }
 
-function syncTour(tour, joueurs, scores, source) {
-  window._diagSync = window._diagSync || { direct: 0, secours: 0 };
-  window._diagSync[source === 'secours' ? 'secours' : 'direct']++;
-  const dbadge = document.getElementById('diag-badge');
-  if (dbadge) {
-    dbadge.style.display = 'block';
-    dbadge.textContent = 'Sync ' + window._diagSync.direct + ' / Secours ' + window._diagSync.secours;
-  }
+function syncTour(tour, joueurs, scores) {
 
   if (!tour) return;
   if (typeof G === 'undefined' || !G.players) return;
@@ -95657,9 +95643,10 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 500);
   };
 
-  window.demarrerPartieFirebase = function(code, maquette, duree) {
+  window.demarrerPartieFirebase = function(code, maquette, duree, debutPartie) {
     update(pRef(code), {
       etat: 'en_cours', maquette, duree: duree || 60,
+      debutPartie: debutPartie || Date.now(),
       'tour/joueurActif': 'j1', 'tour/numero': 1,
       'tour/action': 'attente_theme', 'tour/theme': null,
       'tour/debutTour': Date.now(),
@@ -95676,7 +95663,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       get(pRef(code)).then(snap => {
         const d = snap.val();
         if (d && d.tour && typeof window.syncTour === 'function') {
-          window.syncTour(d.tour, d.joueurs, d.scores, 'secours');
+          window.syncTour(d.tour, d.joueurs, d.scores);
         }
       }).catch(() => {});
     }, 4000);
@@ -95723,7 +95710,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
         window._nomAdverse = d.joueurs && d.joueurs.j1 ? d.joueurs.j1.nom : 'Joueur 1';
         _maqActive = d.maquette;
         if (d.duree) _dureePartie = d.duree;
-        if (typeof startGameEnLigne === 'function') startGameEnLigne();
+        if (typeof startGameEnLigne === 'function') startGameEnLigne(d.debutPartie);
         if (typeof showChatBtn === 'function') showChatBtn();
         return;
       }
