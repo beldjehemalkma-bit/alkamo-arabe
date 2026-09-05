@@ -94874,29 +94874,10 @@ function validerMaquette() {
       log('⏳ Attendez que le créateur lance la partie.', 'inf');
       return;
     }
-    lancerPartieSecurise();
+    startGameEnLigne();
   } else {
     go('setup');
   }
-}
-
-// Ne lance la partie côté créateur qu'une fois l'adversaire confirmé par
-// Firebase — évite de démarrer avant d'avoir reçu son identifiant, cause
-// racine des blocages de passage de tour observés en début de partie.
-function lancerPartieSecurise(tentative) {
-  tentative = tentative || 0;
-  if (window._idAdverse) {
-    startGameEnLigne();
-    return;
-  }
-  if (tentative === 0) {
-    log('⏳ En attente de la confirmation du 2e joueur...', 'inf');
-  }
-  if (tentative >= 25) {
-    log('⚠ Le 2e joueur ne semble pas connecté — vérifiez qu\'il a bien rejoint, puis réessayez.', 'bad');
-    return;
-  }
-  setTimeout(() => lancerPartieSecurise(tentative + 1), 400);
 }
 
 function startGameEnLigne() {
