@@ -95257,6 +95257,16 @@ window._onSalonInviteAccepted = function(code) {
 };
 
 function onlineCreer() {
+  // Sur une page tout juste chargée, la connexion Firebase peut ne pas
+  // être encore pleinement établie. On laisse un court délai fixe (borné,
+  // jamais bloquant indéfiniment) se dérouler avant de créer la partie,
+  // pour donner à la connexion une vraie chance d'être prête.
+  const dejaEcoule = Date.now() - performance.timeOrigin;
+  const delaiRestant = Math.max(0, 1500 - dejaEcoule);
+  const btn = document.getElementById('online-step1');
+  setTimeout(_onlineCreerImpl, delaiRestant);
+}
+function _onlineCreerImpl() {
   const nom = document.getElementById('online-nom').value.trim() || 'Joueur 1';
   if (window.creerPartieEnLigne) {
     const code = window.creerPartieEnLigne(nom);
