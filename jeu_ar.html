@@ -94060,9 +94060,7 @@ function _confirmerMotFinalize(word, pIdx) {
     if (window.majScore) window.majScore(window._codePartie, window._idJoueur, p.score);
     // Passer le tour - syncTour gérera le nouveau thème côté J2
     stopTimer();
-    if (window._idAdverse && window.passerAuTourSuivant) {
-      window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1, caseIdPubLie);
-    }
+    window.passerTourSecurise(G.round + 1, caseIdPubLie);
     return;
   }
 
@@ -94086,11 +94084,8 @@ function passerTour() {
     stopTimer();
     if (window._codePartie && window.publierAction)
       window.publierAction(window._codePartie, 'passer', {});
-    if (window._idAdverse && window.passerAuTourSuivant) {
-      // Inclure l'ID de la case jouée pour éviter les répétitions
-      const lastId = G.curCase ? G.curCase.id : null;
-      window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1, lastId);
-    }
+    const lastId = G.curCase ? G.curCase.id : null;
+    window.passerTourSecurise(G.round + 1, lastId);
     return;
   }
   
@@ -94171,18 +94166,7 @@ function nextTurn() {
   // En mode en ligne : Firebase gère le tour, pas nextTurn
   if (_modeEnLigne) {
     stopTimer();
-    const advId = window._idAdverse || (window._idJoueur === 'j1' ? 'j2' : 'j1');
-    if (window.passerAuTourSuivant && window._codePartie)
-      window.passerAuTourSuivant(window._codePartie, advId, G.round + 1);
-    return;
-  }
-
-  // Mode local uniquement
-  // Mode en ligne : Firebase gère le tour
-  if (_modeEnLigne) {
-    stopTimer();
-    if (window._idAdverse && window.passerAuTourSuivant && window._codePartie)
-      window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1);
+    window.passerTourSecurise(G.round + 1, null);
     return;
   }
 
@@ -94890,10 +94874,29 @@ function validerMaquette() {
       log('⏳ Attendez que le créateur lance la partie.', 'inf');
       return;
     }
-    startGameEnLigne();
+    lancerPartieSecurise();
   } else {
     go('setup');
   }
+}
+
+// Ne lance la partie côté créateur qu'une fois l'adversaire confirmé par
+// Firebase — évite de démarrer avant d'avoir reçu son identifiant, cause
+// racine des blocages de passage de tour observés en début de partie.
+function lancerPartieSecurise(tentative) {
+  tentative = tentative || 0;
+  if (window._idAdverse) {
+    startGameEnLigne();
+    return;
+  }
+  if (tentative === 0) {
+    log('⏳ En attente de la confirmation du 2e joueur...', 'inf');
+  }
+  if (tentative >= 25) {
+    log('⚠ Le 2e joueur ne semble pas connecté — vérifiez qu\'il a bien rejoint, puis réessayez.', 'bad');
+    return;
+  }
+  setTimeout(() => lancerPartieSecurise(tentative + 1), 400);
 }
 
 function startGameEnLigne() {
@@ -95689,6 +95692,28 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     update(ref(db, 'parties/' + code + '/tour'), data);
   };
 
+  // Passage de tour sécurisé : si l'identifiant de l'adversaire n'est pas
+  // encore connu (course de vitesse au tout début de partie), on ne perd
+  // jamais l'action — on la retente automatiquement pendant quelques
+  // secondes, avec un message clair, au lieu de l'ignorer silencieusement.
+  window.passerTourSecurise = function(numero, lastCaseId, tentative) {
+    tentative = tentative || 0;
+    if (window._idAdverse && window._codePartie) {
+      window.passerAuTourSuivant(window._codePartie, window._idAdverse, numero, lastCaseId);
+      return;
+    }
+    if (tentative === 0 && typeof log === 'function') {
+      log('⏳ Connexion en cours, transmission du tour...', 'inf');
+    }
+    if (tentative >= 15) {
+      if (typeof log === 'function') {
+        log('⚠ Impossible de transmettre le tour — vérifiez votre connexion et réessayez.', 'bad');
+      }
+      return;
+    }
+    setTimeout(() => window.passerTourSecurise(numero, lastCaseId, tentative + 1), 400);
+  };
+
   window.majScore = function(code, idJoueur, score) {
     update(ref(db, 'parties/' + code + '/scores'), { [idJoueur]: score });
   };
@@ -96316,9 +96341,7 @@ function traiterReponseDefi(accepte) {
     }
     if (accepte && window.majScore) window.majScore(window._codePartie, window._idJoueur, p.score);
     stopTimer();
-    if (window._idAdverse && window.passerAuTourSuivant) {
-      window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1, caseIdPubLie);
-    }
+    window.passerTourSecurise(G.round + 1, caseIdPubLie);
     return;
   }
 
