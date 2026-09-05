@@ -94896,11 +94896,10 @@ function validerMaquette() {
   }
 }
 
-function startGameEnLigne(debutPartieTs) {
+function startGameEnLigne() {
   const nom = window._nomJoueur || 'Joueur';
   const code = window._codePartie || '';
   const estJ1 = window._estCreateur === true;
-  const debutPartieRef = debutPartieTs || Date.now();
 
   G = {
     players: [{ name: nom, score: 0, letters: [], isBot: false }],
@@ -94919,7 +94918,7 @@ function startGameEnLigne(debutPartieTs) {
   window._finPartieRecu = false;
 
   if (estJ1 && window.demarrerPartieFirebase) {
-    window.demarrerPartieFirebase(code, _maqActive, _dureePartie, debutPartieRef);
+    window.demarrerPartieFirebase(code, _maqActive, _dureePartie);
     if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
     if (window.ecouterChat) window.ecouterChat(code);
   }
@@ -94933,7 +94932,7 @@ function startGameEnLigne(debutPartieTs) {
   showChatBtn();
   renderAll();
   renderHistPanel();
-  startPartieTimer(debutPartieRef);
+  startPartieTimer();
   if (window.demarrerPollTourSecours) window.demarrerPollTourSecours(code);
 
   if (estMonTour()) { startTimer(); startBgMusic(); } else { stopTimer(); stopBgMusic(); }
@@ -95045,10 +95044,8 @@ function setDureeLibre(val) {
   }
 }
 
-function startPartieTimer(debutPartieTs) {
-  var debutRef = debutPartieTs || Date.now();
-  var dureeTotale = _dureePartie * 60;
-  _partieSecondes = dureeTotale;
+function startPartieTimer() {
+  _partieSecondes = _dureePartie * 60;
   _tempsEcoule = false;
   var el = document.getElementById('partie-timer');
   var tmr = document.getElementById('partie-tmr');
@@ -95057,8 +95054,7 @@ function startPartieTimer(debutPartieTs) {
   if (el) el.style.display = 'flex';
   updatePartieTimer();
   _partieTimer = setInterval(function() {
-    var ecouleSec = Math.floor((Date.now() - debutRef) / 1000);
-    _partieSecondes = Math.max(0, dureeTotale - ecouleSec);
+    _partieSecondes--;
     updatePartieTimer();
     if (_partieSecondes <= 0) {
       clearInterval(_partieTimer);
@@ -95643,10 +95639,9 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 500);
   };
 
-  window.demarrerPartieFirebase = function(code, maquette, duree, debutPartie) {
+  window.demarrerPartieFirebase = function(code, maquette, duree) {
     update(pRef(code), {
       etat: 'en_cours', maquette, duree: duree || 60,
-      debutPartie: debutPartie || Date.now(),
       'tour/joueurActif': 'j1', 'tour/numero': 1,
       'tour/action': 'attente_theme', 'tour/theme': null,
       'tour/debutTour': Date.now(),
@@ -95710,7 +95705,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
         window._nomAdverse = d.joueurs && d.joueurs.j1 ? d.joueurs.j1.nom : 'Joueur 1';
         _maqActive = d.maquette;
         if (d.duree) _dureePartie = d.duree;
-        if (typeof startGameEnLigne === 'function') startGameEnLigne(d.debutPartie);
+        if (typeof startGameEnLigne === 'function') startGameEnLigne();
         if (typeof showChatBtn === 'function') showChatBtn();
         return;
       }
