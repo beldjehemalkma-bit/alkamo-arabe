@@ -94171,18 +94171,9 @@ function nextTurn() {
   // En mode en ligne : Firebase gère le tour, pas nextTurn
   if (_modeEnLigne) {
     stopTimer();
-    const advId = window._idAdverse || (window._idJoueur === 'j1' ? 'j2' : 'j1');
-    if (window.passerAuTourSuivant && window._codePartie)
-      window.passerAuTourSuivant(window._codePartie, advId, G.round + 1);
-    return;
-  }
-
-  // Mode local uniquement
-  // Mode en ligne : Firebase gère le tour
-  if (_modeEnLigne) {
-    stopTimer();
-    if (window._idAdverse && window.passerAuTourSuivant && window._codePartie)
+    if (window._idAdverse && window.passerAuTourSuivant && window._codePartie) {
       window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1);
+    }
     return;
   }
 
