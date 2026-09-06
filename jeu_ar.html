@@ -94060,8 +94060,12 @@ function _confirmerMotFinalize(word, pIdx) {
     if (window.majScore) window.majScore(window._codePartie, window._idJoueur, p.score);
     // Passer le tour - syncTour gérera le nouveau thème côté J2
     stopTimer();
+    window._dbgLog('Mot validé "' + word + '" — _idAdverse au moment du passage = ' + (window._idAdverse || 'AUCUN'));
     if (window._idAdverse && window.passerAuTourSuivant) {
       window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1, caseIdPubLie);
+      window._dbgLog('→ passerAuTourSuivant() appelé avec succès (id=' + window._idAdverse + ')');
+    } else {
+      window._dbgLog('→ ⚠ ÉCHEC: passerAuTourSuivant() NON appelé (idAdverse manquant ou fonction absente)');
     }
     return;
   }
@@ -94881,6 +94885,7 @@ function validerMaquette() {
       log('⏳ Attendez que le créateur lance la partie.', 'inf');
       return;
     }
+    window._dbgLog('Clic sur Jouer — _idAdverse au clic = ' + (window._idAdverse || 'AUCUN'));
     startGameEnLigne();
   } else {
     go('setup');
@@ -95361,6 +95366,9 @@ function syncTour(tour, joueurs, scores) {
   if (!tour) return;
   if (typeof G === 'undefined' || !G.players) return;
   const ancienActif = window._joueurActifId;
+  if (ancienActif !== tour.joueurActif) {
+    window._dbgLog('Réception syncTour: joueurActif ' + ancienActif + ' → ' + tour.joueurActif);
+  }
   window._joueurActifId = tour.joueurActif;
   if (joueurs && joueurs[tour.joueurActif])
     window._nomJoueurActif = joueurs[tour.joueurActif].nom;
@@ -95615,6 +95623,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     window._idJoueur = 'j1';
     window._estCreateur = true;
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 300);
+    window._dbgLog('Partie créée par ' + nom);
     return code;
   };
 
@@ -95628,6 +95637,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     update(ref(db, 'parties/' + code + '/scores'), { [idJ]: 0 });
     _ecouterPartie(code);
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 500);
+    window._dbgLog(nom + ' a rejoint (id=' + idJ + ')');
   };
 
   window.demarrerPartieFirebase = function(code, maquette, duree) {
@@ -95657,6 +95667,22 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   window.arreterPollTourSecours = function() {
     if (window._pollTourInterval) { clearInterval(window._pollTourInterval); window._pollTourInterval = null; }
   };
+
+  // Journal de bord : enregistre les étapes clés dans Firebase, pour pouvoir
+  // reconstituer précisément ce qui s'est passé après un test, sans deviner.
+  window._dbgLog = function(msg) {
+    try {
+      if (!window._codePartie) return;
+      push(ref(db, 'parties/' + window._codePartie + '/debug'), {
+        t: new Date().toLocaleTimeString('fr-FR'),
+        qui: window._idJoueur || '?',
+        msg: msg
+      });
+    } catch(e) {}
+  };
+  window.addEventListener('error', function(e) {
+    if (window._dbgLog) window._dbgLog('❌ ERREUR JS: ' + e.message + ' (ligne ' + e.lineno + ')');
+  });
 
   window.publierTheme = function(code, t) {
     update(ref(db, 'parties/' + code + '/tour'), { theme: t, action: 'jouer' });
@@ -95743,6 +95769,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
             window._advAnnonce = true;
             if (typeof log === 'function') log(window._nomAdverse + ' a rejoint !', 'inf');
             if (typeof renderAll === 'function') renderAll();
+            window._dbgLog('Adversaire détecté (creation): ' + window._nomAdverse + ' (id=' + advId + ')');
           }
         }
         if (window._idAdverse && d.scores && d.scores[window._idAdverse] !== undefined)
