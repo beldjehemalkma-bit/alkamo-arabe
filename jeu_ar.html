@@ -152,13 +152,6 @@ body{font-family:'Tajawal','Segoe UI',Arial,sans-serif;background:linear-gradien
 .tmr-expired{background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.3);border-radius:8px;padding:7px 12px;font-size:.78rem;color:var(--red);text-align:center;display:none;}
 .tmr-expired.show{display:block;}
 
-/* Bandeau temps de partie écoulé — en haut de la zone de jeu, bien visible, clignotant */
-.partie-expired-banner{width:100%;box-sizing:border-box;margin-bottom:10px;
-  background:rgba(250,208,96,.97);border:2px solid #FAD060;border-radius:10px;padding:11px 16px;
-  font-size:.95rem;font-weight:900;color:#1a1400;text-align:center;display:none;
-  box-shadow:0 4px 16px rgba(0,0,0,.4);animation:urgentPulse .9s infinite;}
-.partie-expired-banner.show{display:block;}
-
 /* Log */
 .glog{background:rgba(0,0,0,.2);border-radius:10px;padding:10px;max-height:85px;overflow-y:auto;font-size:.78rem;}
 .log-e{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.6);}
@@ -788,14 +781,6 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
 </style>
 </head>
 <body>
-<script>
-(function() {
-  var p = new URLSearchParams(location.search);
-  if (p.get('role') === 'createur' || p.get('role') === 'invite') {
-    document.write('<style>#s-home{display:none !important;}</style>');
-  }
-})();
-</script>
 
 <!-- ACCUEIL -->
 <div id="s-home" class="screen active">
@@ -960,9 +945,6 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
   <div class="sbar" id="sbar"></div>
   <div class="game-layout">
   <div class="board">
-
-    <!-- Temps de partie écoulé -->
-    <div class="partie-expired-banner" id="partie-exp">⏱ Temps de partie écoulé — cliquez ici pour voir les scores finaux</div>
 
     <!-- Thème -->
     <div class="theme-box">
@@ -93235,16 +93217,14 @@ function renderCase() {
 // ═══════════════════════════════════════════
 // TIMER
 // ═══════════════════════════════════════════
-function startTimer(debutTs) {
+function startTimer() {
   stopTimer();
-  G.tourDebut = debutTs || Date.now();
   G.timeLeft = 180;
   G.timerExpired = false;
   document.getElementById('tmr-exp').classList.remove('show');
   updateTimer();
   G.timer = setInterval(() => {
-    const ecoule = Math.floor((Date.now() - G.tourDebut) / 1000);
-    G.timeLeft = Math.max(0, 180 - ecoule);
+    G.timeLeft--;
     updateTimer();
     if (G.timeLeft === 30) snd('alert');
     if (G.timeLeft <= 0) {
@@ -93391,12 +93371,9 @@ function renderWord() {
   const evalEl = document.getElementById('weval');
 
   if (G.changeMode) {
-    drop.innerHTML = '';
-    const chp = document.createElement('span');
-    chp.className = 'word-ph'; chp.id = 'wph';
-    chp.textContent = '🔄 Mode changement actif — sélectionnez les lettres en rouge sur le chevalet';
-    chp.style.color = 'var(--red)';
-    drop.appendChild(chp);
+    ph.style.display = 'block';
+    ph.textContent = '🔄 Mode changement actif — sélectionnez les lettres en rouge sur le chevalet';
+    ph.style.color = 'var(--red)';
     formed.textContent = '';
     evalEl.textContent = '';
     return;
@@ -94060,12 +94037,8 @@ function _confirmerMotFinalize(word, pIdx) {
     if (window.majScore) window.majScore(window._codePartie, window._idJoueur, p.score);
     // Passer le tour - syncTour gérera le nouveau thème côté J2
     stopTimer();
-    window._dbgLog('Mot validé "' + word + '" — _idAdverse au moment du passage = ' + (window._idAdverse || 'AUCUN'));
     if (window._idAdverse && window.passerAuTourSuivant) {
       window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1, caseIdPubLie);
-      window._dbgLog('→ passerAuTourSuivant() appelé avec succès (id=' + window._idAdverse + ')');
-    } else {
-      window._dbgLog('→ ⚠ ÉCHEC: passerAuTourSuivant() NON appelé (idAdverse manquant ou fonction absente)');
     }
     return;
   }
@@ -94175,9 +94148,18 @@ function nextTurn() {
   // En mode en ligne : Firebase gère le tour, pas nextTurn
   if (_modeEnLigne) {
     stopTimer();
-    if (window._idAdverse && window.passerAuTourSuivant && window._codePartie) {
+    const advId = window._idAdverse || (window._idJoueur === 'j1' ? 'j2' : 'j1');
+    if (window.passerAuTourSuivant && window._codePartie)
+      window.passerAuTourSuivant(window._codePartie, advId, G.round + 1);
+    return;
+  }
+
+  // Mode local uniquement
+  // Mode en ligne : Firebase gère le tour
+  if (_modeEnLigne) {
+    stopTimer();
+    if (window._idAdverse && window.passerAuTourSuivant && window._codePartie)
       window.passerAuTourSuivant(window._codePartie, window._idAdverse, G.round + 1);
-    }
     return;
   }
 
@@ -94398,32 +94380,6 @@ document.addEventListener('DOMContentLoaded', function() {
     go('maquette');
     if (typeof renderMaquetteTabs === 'function') renderMaquetteTabs();
     if (typeof renderMaqGrille === 'function') renderMaqGrille(_maqActive);
-  }
-  // Arrivée directe depuis une invitation acceptée sur la page d'accueil (index.html)
-  const role = urlParams.get('role');
-  if (role === 'createur' || role === 'invite') {
-    const codeUrl = urlParams.get('code');
-    const pseudoUrl = urlParams.get('pseudo') || 'Joueur';
-    const advUrl = urlParams.get('adv') || '';
-    _modeEnLigne = true;
-    window._nomJoueur = pseudoUrl;
-    window._nomAdverse = advUrl;
-    if (role === 'createur') {
-      if (window.creerPartieEnLigne) window.creerPartieEnLigne(pseudoUrl, codeUrl);
-      if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(codeUrl);
-    } else {
-      window._idAdverse = 'j1';
-      if (window.rejoindrePatie) window.rejoindrePatie(codeUrl, pseudoUrl);
-    }
-    openMaquette(true);
-    setTimeout(() => {
-      const chatZ = document.getElementById('maq-chat-zone');
-      if (chatZ) { chatZ.style.display = 'block'; chatZ.dataset.code = codeUrl; }
-      if (role === 'invite') {
-        const btnJ = document.getElementById('maq-btn-jouer');
-        if (btnJ) btnJ.style.display = 'none';
-      }
-    }, 300);
   }
   setupDropZone();
   setupChevaletDropZone();
@@ -94885,7 +94841,6 @@ function validerMaquette() {
       log('⏳ Attendez que le créateur lance la partie.', 'inf');
       return;
     }
-    window._dbgLog('Clic sur Jouer — _idAdverse au clic = ' + (window._idAdverse || 'AUCUN'));
     startGameEnLigne();
   } else {
     go('setup');
@@ -94929,7 +94884,6 @@ function startGameEnLigne() {
   renderAll();
   renderHistPanel();
   startPartieTimer();
-  if (window.demarrerPollTourSecours) window.demarrerPollTourSecours(code);
 
   if (estMonTour()) { startTimer(); startBgMusic(); } else { stopTimer(); stopBgMusic(); }
   setTimeout(() => afficherIndicateurTour(), 300);
@@ -95045,8 +94999,6 @@ function startPartieTimer() {
   _tempsEcoule = false;
   var el = document.getElementById('partie-timer');
   var tmr = document.getElementById('partie-tmr');
-  var pexpBanner = document.getElementById('partie-exp');
-  if (pexpBanner) pexpBanner.classList.remove('show');
   if (el) el.style.display = 'flex';
   updatePartieTimer();
   _partieTimer = setInterval(function() {
@@ -95056,9 +95008,7 @@ function startPartieTimer() {
       clearInterval(_partieTimer);
       _tempsEcoule = true;
       if (tmr) { tmr.textContent = '00:00'; tmr.className = 'partie-tmr urgent'; }
-      log('⏱ Temps écoulé ! Cliquez sur le bandeau pour voir les scores finaux.', 'bad');
-      var pexpBanner2 = document.getElementById('partie-exp');
-      if (pexpBanner2) pexpBanner2.classList.add('show');
+      log('⏱ Temps écoulé ! Affichage des scores dans 2 secondes...', 'bad');
       snd('urgent');
       // Fin automatique par le temps : pas de question "voulez-vous vraiment terminer ?"
       // On déclenche directement le bouton "Terminer ✓" (même code fiable), sans
@@ -95221,7 +95171,6 @@ window._onSalonListUpdate = function(data, monUid) {
 function inviterDepuisSalon(targetUid, targetNom) {
   if (!window._salonMonNom) return;
   window.salonInviter(window._salonMonNom, targetUid);
-  window._dbgLogGlobal('Invitation envoyée par ' + window._salonMonNom + ' à ' + targetNom + ' (uid=' + targetUid + ')');
   alert('Invitation envoyée à ' + targetNom + ' — en attente de sa réponse...');
 }
 
@@ -95229,7 +95178,6 @@ window._onSalonInviteReceived = function(inv) {
   if (window._inviteHandledCode === inv.code) return;
   window._inviteHandledCode = inv.code;
   window._inviteCodeRecu = inv.code;
-  window._dbgLogGlobal('Invitation reçue — code = "' + inv.code + '" de ' + inv.fromNom);
   document.getElementById('invite-from-nom').textContent = inv.fromNom;
   document.getElementById('m-invitation').style.display = 'flex';
 };
@@ -95237,7 +95185,6 @@ window._onSalonInviteReceived = function(inv) {
 function accepterInvitationUI() {
   const code = window._inviteCodeRecu;
   const nom = window._salonMonNom || document.getElementById('online-nom').value.trim() || 'Joueur';
-  window._dbgLogGlobal('Acceptation invitation par ' + nom + ' — code utilisé = "' + code + '"');
   document.getElementById('m-invitation').style.display = 'none';
   if (window.salonRefuserInvite && window._salonMonUid) window.salonRefuserInvite(window._salonMonUid);
   if (window.salonQuitter) window.salonQuitter(window._salonMonUid);
@@ -95263,7 +95210,6 @@ function refuserInvitationUI() {
 }
 
 window._onSalonInviteAccepted = function(code) {
-  window._dbgLogGlobal('Créateur informé — invitation acceptée, code = "' + code + '"');
   if (window.salonQuitter) window.salonQuitter(window._salonMonUid);
   window._salonMonUid = null;
   _modeEnLigne = true;
@@ -95280,7 +95226,6 @@ function onlineCreer() {
     document.getElementById('online-step1').style.display = 'none';
     document.getElementById('online-step2').style.display = 'block';
     if (window.ecouterChat) window.ecouterChat(code);
-    if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
   } else {
     alert('Firebase non connecté — vérifiez votre connexion internet');
   }
@@ -95352,6 +95297,16 @@ function afficherIndicateurTour() {
     }
   }
 
+  if (window._nomAdverse) {
+    let badge = document.getElementById('score-adverse');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'score-adverse';
+      badge.style.cssText = 'position:fixed;top:60px;right:10px;padding:4px 12px;border-radius:10px;font-size:.82rem;font-weight:900;background:rgba(0,0,0,.75);color:#fff;z-index:199;pointer-events:none;border:1px solid rgba(200,160,32,.3);';
+      document.body.appendChild(badge);
+    }
+    badge.textContent = window._nomAdverse + ' : ' + (window._scoreAdverse || 0) + ' نقطة';
+  }
 
   ['btn-val','btn-pass','btn-chg-toggle'].forEach(id => {
     const el = document.getElementById(id);
@@ -95366,13 +95321,9 @@ function afficherIndicateurTour() {
 }
 
 function syncTour(tour, joueurs, scores) {
-
   if (!tour) return;
   if (typeof G === 'undefined' || !G.players) return;
   const ancienActif = window._joueurActifId;
-  if (ancienActif !== tour.joueurActif) {
-    window._dbgLog('Réception syncTour: joueurActif ' + ancienActif + ' → ' + tour.joueurActif);
-  }
   window._joueurActifId = tour.joueurActif;
   if (joueurs && joueurs[tour.joueurActif])
     window._nomJoueurActif = joueurs[tour.joueurActif].nom;
@@ -95381,14 +95332,8 @@ function syncTour(tour, joueurs, scores) {
 
   afficherIndicateurTour();
 
-  // Redémarre le minuteur si ce n'est pas déjà mon tour en cours, ou si
-  // l'horodatage de référence a changé (nouveau tour), pour éviter qu'il
-  // reste figé si un état précédent était incohérent.
-  const minuteurDoitDemarrer = estMonTour() && (!G.timer || G.tourDebut !== tour.debutTour);
-  if (minuteurDoitDemarrer) {
-    startTimer(tour.debutTour);
-  }
   if (estMonTour()) {
+    if (!G.timer) startTimer();
     startBgMusic();
   } else {
     stopTimer();
@@ -95615,8 +95560,8 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   function pRef(code) { return ref(db, 'parties/' + code); }
   function genCode() { return Math.random().toString(36).substr(2,6).toUpperCase(); }
 
-  window.creerPartieEnLigne = function(nom, codeForce) {
-    const code = codeForce || genCode();
+  window.creerPartieEnLigne = function(nom) {
+    const code = genCode();
     set(pRef(code), {
       code, etat: 'attente', maquette: null,
       joueurs: { j1: { nom, score: 0 } },
@@ -95627,7 +95572,6 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     window._idJoueur = 'j1';
     window._estCreateur = true;
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 300);
-    window._dbgLog('Partie créée par ' + nom);
     return code;
   };
 
@@ -95641,7 +95585,6 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     update(ref(db, 'parties/' + code + '/scores'), { [idJ]: 0 });
     _ecouterPartie(code);
     setTimeout(() => { if (window._ecouterLobbyChat) window._ecouterLobbyChat(code); }, 500);
-    window._dbgLog(nom + ' a rejoint (id=' + idJ + ')');
   };
 
   window.demarrerPartieFirebase = function(code, maquette, duree) {
@@ -95649,54 +95592,9 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       etat: 'en_cours', maquette, duree: duree || 60,
       'tour/joueurActif': 'j1', 'tour/numero': 1,
       'tour/action': 'attente_theme', 'tour/theme': null,
-      'tour/debutTour': Date.now(),
       finPartie: null
     });
   };
-
-  // Filet de sécurité : revérifie périodiquement l'état réel du tour dans
-  // Firebase, au cas où une mise à jour "en direct" ne serait pas arrivée.
-  window.demarrerPollTourSecours = function(code) {
-    if (window._pollTourInterval) clearInterval(window._pollTourInterval);
-    window._pollTourInterval = setInterval(() => {
-      if (!window._partieDemar || !code) return;
-      get(pRef(code)).then(snap => {
-        const d = snap.val();
-        if (d && d.tour && typeof window.syncTour === 'function') {
-          window.syncTour(d.tour, d.joueurs, d.scores);
-        }
-      }).catch(() => {});
-    }, 4000);
-  };
-  window.arreterPollTourSecours = function() {
-    if (window._pollTourInterval) { clearInterval(window._pollTourInterval); window._pollTourInterval = null; }
-  };
-
-  // Journal de bord : enregistre les étapes clés dans Firebase, pour pouvoir
-  // reconstituer précisément ce qui s'est passé après un test, sans deviner.
-  window._dbgLog = function(msg) {
-    try {
-      if (!window._codePartie) return;
-      push(ref(db, 'parties/' + window._codePartie + '/debug'), {
-        t: new Date().toLocaleTimeString('fr-FR'),
-        qui: window._idJoueur || '?',
-        msg: msg
-      });
-    } catch(e) {}
-  };
-  // Journal indépendant, utilisable même avant d'avoir un code de partie
-  // valide (ex : au moment précis d'accepter une invitation).
-  window._dbgLogGlobal = function(msg) {
-    try {
-      push(ref(db, 'debug_global'), {
-        t: new Date().toLocaleTimeString('fr-FR'),
-        msg: msg
-      });
-    } catch(e) {}
-  };
-  window.addEventListener('error', function(e) {
-    if (window._dbgLog) window._dbgLog('❌ ERREUR JS: ' + e.message + ' (ligne ' + e.lineno + ')');
-  });
 
   window.publierTheme = function(code, t) {
     update(ref(db, 'parties/' + code + '/tour'), { theme: t, action: 'jouer' });
@@ -95713,8 +95611,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   window.passerAuTourSuivant = function(code, joueurSuivant, numero, lastCaseId) {
     const data = {
       joueurActif: joueurSuivant, numero: numero,
-      action: 'attente_theme', theme: null,
-      debutTour: Date.now()
+      action: 'attente_theme', theme: null
     };
     if (lastCaseId) data.lastCaseId = lastCaseId;
     update(ref(db, 'parties/' + code + '/tour'), data);
@@ -95745,7 +95642,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
         if (el) el.textContent = Object.values(d.joueurs).map(j => j.nom).join(', ');
       }
       if (d.etat === 'terminee' && window._partieDemar && !window._finPartieRecu) {
-        window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
+        window._finPartieRecu = true;
         if (typeof stopTimer === 'function') stopTimer();
         const fp = d.finPartie || {};
         if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
@@ -95768,12 +95665,20 @@ function ajouterMsgTexteLocal(who, texte, moi) {
   }
 
   window.ecouterPartieCreateur = function(code) {
-    if (window._creListenerActif === code) return; // éviter un double abonnement
-    window._creListenerActif = code;
     onValue(pRef(code), snap => {
       const d = snap.val();
-      if (!d) return;
-      // Détecter l'adversaire dès qu'il rejoint, même avant le lancement de la partie
+      if (!d || !window._partieDemar) return;
+      // Détecter fin de partie
+      if (d.etat === 'terminee' && !window._finPartieRecu) {
+        window._finPartieRecu = true;
+        if (typeof stopTimer === 'function') stopTimer();
+        const fp = d.finPartie || {};
+        // Afficher notification seulement si c'est l'adversaire qui a fini
+        if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
+          _afficherNotifFin(fp.par || '?');
+        }
+        return;
+      }
       if (d.joueurs) {
         const advId = Object.keys(d.joueurs).find(id => id !== window._idJoueur);
         if (advId && d.joueurs[advId]) {
@@ -95783,23 +95688,10 @@ function ajouterMsgTexteLocal(who, texte, moi) {
             window._advAnnonce = true;
             if (typeof log === 'function') log(window._nomAdverse + ' a rejoint !', 'inf');
             if (typeof renderAll === 'function') renderAll();
-            window._dbgLog('Adversaire détecté (creation): ' + window._nomAdverse + ' (id=' + advId + ')');
           }
         }
         if (window._idAdverse && d.scores && d.scores[window._idAdverse] !== undefined)
           window._scoreAdverse = d.scores[window._idAdverse];
-      }
-      if (!window._partieDemar) return;
-      // Détecter fin de partie
-      if (d.etat === 'terminee' && !window._finPartieRecu) {
-        window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
-        if (typeof stopTimer === 'function') stopTimer();
-        const fp = d.finPartie || {};
-        // Afficher notification seulement si c'est l'adversaire qui a fini
-        if (fp.idJoueur && fp.idJoueur !== window._idJoueur) {
-          _afficherNotifFin(fp.par || '?');
-        }
-        return;
       }
       if (d.tour && typeof syncTour === 'function') syncTour(d.tour, d.joueurs, d.scores);
     });
@@ -95952,7 +95844,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       // Filtrer par ID joueur (plus fiable que le nom)
       if (d.idJoueur === window._idJoueur) return;
       if (window._finPartieRecu) return;
-      window._finPartieRecu = true; if (window.arreterPollTourSecours) window.arreterPollTourSecours();
+      window._finPartieRecu = true;
       if (typeof stopTimer === 'function') stopTimer();
       if (typeof stopPartieTimer === 'function') stopPartieTimer();
       if (typeof stopBgMusic === 'function') stopBgMusic();
@@ -96037,7 +95929,6 @@ function _executerFinPartie() {
 
   window.salonInviter = function(myNom, targetUid) {
     const code = window.creerPartieEnLigne(myNom);
-    if (window.ecouterPartieCreateur) window.ecouterPartieCreateur(code);
     set(ref(db, 'salon_invites/' + targetUid), { fromNom: myNom, code, ts: Date.now() });
     const unsub = onValue(ref(db, 'parties/' + code + '/joueurs'), snap => {
       const joueurs = snap.val() || {};
