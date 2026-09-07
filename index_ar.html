@@ -661,7 +661,7 @@ function toggleMobileMenu() {
 
 <!-- ══ HERO ══ -->
 <header class="hero">
-  <div class="hero-tiles">
+  <div class="hero-tiles" style="direction:ltr">
     <div class="htile">A<span class="htile-val">2</span></div>
     <div class="htile">L<span class="htile-val">6</span></div>
     <div class="htile">K<span class="htile-val">10</span></div>
@@ -1178,7 +1178,7 @@ onAuthStateChanged(auth, user => {
         <div class="lobby-badge">${dispo ? '🟢 متاح' : '🔴 في جولة'}</div>
         <button class="lobby-invite-btn" ${!dispo ? 'disabled' : ''}
           onclick="window._inviterJoueur('${uid}','${info.pseudo}', event)">
-          Inviter 🎮
+          دعوة 🎮
         </button>
       </div>`;
     }).join('');
@@ -1199,7 +1199,7 @@ onAuthStateChanged(auth, user => {
     }
     _invitationEnCours = inv;
     document.getElementById('invite-notif-text').textContent =
-      '🎮 ' + inv.pseudo + ' vous invite à jouer !';
+      '🎮 ' + inv.pseudo + ' يدعوك للعب!';
     document.getElementById('invite-notif').classList.add('show');
   });
 
@@ -1238,10 +1238,10 @@ onAuthStateChanged(auth, user => {
       } else {
         console.log('[ALKAMO] Invitation refusée par', pseudo);
         // Refusé — remettre les boutons
-        btns.forEach(b => { b.disabled = false; b.textContent = 'Inviter 🎮'; });
+        btns.forEach(b => { b.disabled = false; b.textContent = 'دعوة 🎮'; });
         if (btn) {
           btn.textContent = '❌ Refusé';
-          setTimeout(() => { btn.textContent = 'Inviter 🎮'; }, 2000);
+          setTimeout(() => { btn.textContent = 'دعوة 🎮'; }, 2000);
         }
         set(ref(db, 'lobby/' + _myUid + '/statut'), 'disponible');
       }
