@@ -352,9 +352,9 @@ body{font-family:'Tajawal','Segoe UI',Arial,sans-serif;background:linear-gradien
 .maq-cell.free { background: rgba(29,158,117,.1); border-color: rgba(29,158,117,.3); }
 .maq-cell.free .maq-cell-em { color: #1D9E75; }
 .maq-cell-id { font-size: .58rem; color: rgba(255,255,255,.3); font-family: monospace; }
-.maq-cell-em { font-size: 1.1rem; }
-.maq-cell-th { font-size: .58rem; color: rgba(255,255,255,.75); font-weight: 700; line-height: 1.2; text-align: center; }
-.maq-cell.free .maq-cell-th { color: #1D9E75; font-size: .55rem; }
+.maq-cell-em { font-size: 1.6rem; }
+.maq-cell-th { font-size: .82rem; color: rgba(255,255,255,.9); font-weight: 900; line-height: 1.2; text-align: center; }
+.maq-cell.free .maq-cell-th { color: #1D9E75; font-size: .78rem; font-weight: 900; }
 .maq-cols { display: flex; justify-content: space-around; margin-bottom: 4px; }
 .maq-col-lbl { font-size: .65rem; color: rgba(255,255,255,.25); font-family: monospace; width: calc(20% - 6px); text-align: center; }
 .maq-btn-ok { width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(135deg,var(--purple),var(--gold)); color: #fff; font-weight: 900; font-size: 1rem; cursor: pointer; border: none; letter-spacing: 1px; transition: opacity .2s; }
@@ -548,8 +548,8 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
   .maq-tab { padding:6px 12px; font-size:.78rem; }
   .maq-grid { gap:4px; }
   .maq-cell { min-height:52px; padding:5px 2px; }
-  .maq-cell-th { font-size:.5rem; }
-  .maq-cell-em { font-size:.9rem; }
+  .maq-cell-th { font-size:.7rem; font-weight:900; }
+  .maq-cell-em { font-size:1.3rem; }
 
   /* Modal */
   .modal { padding:18px 14px; }
@@ -578,7 +578,7 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
   .gtile { min-width:48px; height:58px; font-size:1.5rem; }
   .action-row .btn { padding:10px 12px; font-size:.82rem; }
   .maq-cell { min-height:58px; }
-  .maq-cell-th { font-size:.55rem; }
+  .maq-cell-th { font-size:.72rem; font-weight:900; }
 }
 
 /* Touch : agrandir les zones cliquables */
@@ -92669,109 +92669,109 @@ const MAQUETTES = {
   1: {
     nom: "اللوح رقم 1", emoji: "🎯",
     cases: [
-      {id:'A1',th:'الطبخ والمطبخ',emoji:'👗'},        {id:'B1',th:'السفر والسياحة',emoji:'🎣'},
+      {id:'A1',th:'اللباس',emoji:'👗'},        {id:'B1',th:'الصيد',emoji:'🎣'},
       {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
-      {id:'D1',th:'الصحة والطب',emoji:'💬'},           {id:'E1',th:'التكنولوجيا والإعلام',emoji:'🦁'},
-      {id:'A2',th:'التجارة والمال',emoji:'🚗'},        {id:'B2',th:'الطبخ والمطبخ',emoji:'💰'},
-      {id:'C2',th:'السفر والسياحة',emoji:'⚽'},            {id:'D2',th:'الصحة والطب',emoji:'☪'},
-      {id:'E2',th:'التكنولوجيا والإعلام',emoji:'🏫'},
+      {id:'D1',th:'اللغة',emoji:'💬'},           {id:'E1',th:'الثدييات',emoji:'🦁'},
+      {id:'A2',th:'النقل',emoji:'🚗'},        {id:'B2',th:'الاقتصاد',emoji:'💰'},
+      {id:'C2',th:'الرياضة',emoji:'⚽'},            {id:'D2',th:'الدين',emoji:'☪'},
+      {id:'E2',th:'المدرسة',emoji:'🏫'},
       {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
-      {id:'B3',th:'التجارة والمال',emoji:'🔧'},
+      {id:'B3',th:'الأدوات والمهن',emoji:'🔧'},
       {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
-      {id:'D3',th:'الطبخ والمطبخ',emoji:'🏛'},
+      {id:'D3',th:'السياسة',emoji:'🏛'},
       {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
-      {id:'A4',th:'السفر والسياحة',emoji:'🎵'},          {id:'B4',th:'الصحة والطب',emoji:'💎'},
-      {id:'C4',th:'التكنولوجيا والإعلام',emoji:'📏'}, {id:'D4',th:'التجارة والمال',emoji:'🏺'},
-      {id:'E4',th:'الطبخ والمطبخ',emoji:'🍎'},
-      {id:'A5',th:'السفر والسياحة',emoji:'🌳'},            {id:'B5',th:'الصحة والطب',emoji:'⚕'},
+      {id:'A4',th:'الموسيقى',emoji:'🎵'},          {id:'B4',th:'المعادن',emoji:'💎'},
+      {id:'C4',th:'القياس والأدوات',emoji:'📏'}, {id:'D4',th:'الحرف اليدوية',emoji:'🏺'},
+      {id:'E4',th:'الفاكهة',emoji:'🍎'},
+      {id:'A5',th:'الشجرة',emoji:'🌳'},            {id:'B5',th:'الطب',emoji:'⚕'},
       {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
-      {id:'D5',th:'التكنولوجيا والإعلام',emoji:'🏗'},         {id:'E5',th:'التجارة والمال',emoji:'⚛'}
+      {id:'D5',th:'البناء',emoji:'🏗'},         {id:'E5',th:'الفيزياء',emoji:'⚛'}
     ]
   },
   2: {
     nom: "اللوح رقم 2", emoji: "🌟",
     cases: [
-      {id:'A1',th:'قريبًا',emoji:'⚓'},           {id:'B1',th:'قريبًا',emoji:'⚗'},
+      {id:'A1',th:'البحرية',emoji:'⚓'},           {id:'B1',th:'الكيمياء',emoji:'⚗'},
       {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
-      {id:'D1',th:'قريبًا',emoji:'✂'},           {id:'E1',th:'قريبًا',emoji:'📝'},
-      {id:'A2',th:'قريبًا',emoji:'🌸'},            {id:'B2',th:'قريبًا',emoji:'🏭'},
-      {id:'C2',th:'قريبًا',emoji:'👷'},           {id:'D2',th:'قريبًا',emoji:'🐾'},
-      {id:'E2',th:'قريبًا',emoji:'🍲'},
+      {id:'D1',th:'الخياطة',emoji:'✂'},           {id:'E1',th:'النحو',emoji:'📝'},
+      {id:'A2',th:'الزهرة',emoji:'🌸'},            {id:'B2',th:'الصناعة',emoji:'🏭'},
+      {id:'C2',th:'المهنة',emoji:'👷'},           {id:'D2',th:'الحيوان',emoji:'🐾'},
+      {id:'E2',th:'الطبخ',emoji:'🍲'},
       {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
-      {id:'B3',th:'قريبًا',emoji:'🏛'},
+      {id:'B3',th:'المؤسسة',emoji:'🏛'},
       {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
-      {id:'D3',th:'قريبًا',emoji:'🔧'},
+      {id:'D3',th:'الأداة',emoji:'🔧'},
       {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
-      {id:'A4',th:'قريبًا',emoji:'👨‍👩‍👧'},      {id:'B4',th:'قريبًا',emoji:'♟'},
-      {id:'C4',th:'قريبًا',emoji:'🎵'},   {id:'D4',th:'قريبًا',emoji:'🌙'},
-      {id:'E4',th:'قريبًا',emoji:'🥩'},
-      {id:'A5',th:'قريبًا',emoji:'🌵'},        {id:'B5',th:'قريبًا',emoji:'⚡'},
+      {id:'A4',th:'التربية',emoji:'👨‍👩‍👧'},      {id:'B4',th:'اللعب',emoji:'♟'},
+      {id:'C4',th:'الفن والموسيقى',emoji:'🎵'},   {id:'D4',th:'الفلك',emoji:'🌙'},
+      {id:'E4',th:'الغذاء',emoji:'🥩'},
+      {id:'A5',th:'علم النبات',emoji:'🌵'},        {id:'B5',th:'الطاقة',emoji:'⚡'},
       {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
-      {id:'D5',th:'قريبًا',emoji:'💪'},        {id:'E5',th:'قريبًا',emoji:'🦴'}
+      {id:'D5',th:'القوة',emoji:'💪'},        {id:'E5',th:'التشريح',emoji:'🦴'}
     ]
   },
   3: {
     nom: "اللوح رقم 3", emoji: "🏆",
     cases: [
-      {id:'A1',th:'قريبًا',emoji:'⚽'},     {id:'B1',th:'قريبًا',emoji:'🌦'},
+      {id:'A1',th:'اللعب والرياضة',emoji:'⚽'},     {id:'B1',th:'الوقت والطقس',emoji:'🌦'},
       {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
-      {id:'D1',th:'قريبًا',emoji:'💻'},     {id:'E1',th:'قريبًا',emoji:'📐'},
-      {id:'A2',th:'قريبًا',emoji:'🌾'},      {id:'B2',th:'قريبًا',emoji:'🎨'},
-      {id:'C2',th:'قريبًا',emoji:'⚓'},       {id:'D2',th:'قريبًا',emoji:'🌿'},
-      {id:'E2',th:'قريبًا',emoji:'⚔'},
+      {id:'D1',th:'الإعلام الآلي',emoji:'💻'},     {id:'E1',th:'الرياضيات',emoji:'📐'},
+      {id:'A2',th:'الفلاحة',emoji:'🌾'},      {id:'B2',th:'الفن',emoji:'🎨'},
+      {id:'C2',th:'الملاحة',emoji:'⚓'},       {id:'D2',th:'الحيوان والنبات',emoji:'🌿'},
+      {id:'E2',th:'الحرب',emoji:'⚔'},
       {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
-      {id:'B3',th:'قريبًا',emoji:'🏢'},
+      {id:'B3',th:'الإدارة',emoji:'🏢'},
       {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
-      {id:'D3',th:'قريبًا',emoji:'👨‍👩‍👧'},
+      {id:'D3',th:'العائلة',emoji:'👨‍👩‍👧'},
       {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
-      {id:'A4',th:'قريبًا',emoji:'⚗'},{id:'B4',th:'قريبًا',emoji:'🌍'},
-      {id:'C4',th:'قريبًا',emoji:'🏥'},{id:'D4',th:'قريبًا',emoji:'🛒'},
-      {id:'E4',th:'قريبًا',emoji:'⚖'},
-      {id:'A5',th:'قريبًا',emoji:'📖'},      {id:'B5',th:'قريبًا',emoji:'✈'},
+      {id:'A4',th:'الفيزياء والكيمياء',emoji:'⚗'},{id:'B4',th:'الدول والعواصم',emoji:'🌍'},
+      {id:'C4',th:'الطب والتشريح',emoji:'🏥'},{id:'D4',th:'التجارة',emoji:'🛒'},
+      {id:'E4',th:'القانون والعدالة',emoji:'⚖'},
+      {id:'A5',th:'الأدب',emoji:'📖'},      {id:'B5',th:'السياحة',emoji:'✈'},
       {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
-      {id:'D5',th:'قريبًا',emoji:'🏘'},        {id:'E5',th:'قريبًا',emoji:'🌊'}
+      {id:'D5',th:'التعمير',emoji:'🏘'},        {id:'E5',th:'البحر والمحيط',emoji:'🌊'}
     ]
   },
   4: {
     nom: "اللوح رقم 4", emoji: "💫",
     cases: [
-      {id:'A1',th:'قريبًا',emoji:'💗'},        {id:'B1',th:'قريبًا',emoji:'⚛'},
+      {id:'A1',th:'العاطفة',emoji:'💗'},        {id:'B1',th:'الفيزياء',emoji:'⚛'},
       {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
-      {id:'D1',th:'قريبًا',emoji:'🎨'},           {id:'E1',th:'قريبًا',emoji:'💡'},
-      {id:'A2',th:'قريبًا',emoji:'🍽'}, {id:'B2',th:'قريبًا',emoji:'🫀'},
-      {id:'C2',th:'قريبًا',emoji:'🎭'},           {id:'D2',th:'قريبًا',emoji:'🏺'},
-      {id:'E2',th:'قريبًا',emoji:'🦎'},
+      {id:'D1',th:'اللون',emoji:'🎨'},           {id:'E1',th:'فكرة ومفهوم',emoji:'💡'},
+      {id:'A2',th:'الأساطير',emoji:'🍽'}, {id:'B2',th:'جسم الإنسان',emoji:'🫀'},
+      {id:'C2',th:'الثقافة',emoji:'🎭'},           {id:'D2',th:'الآثار',emoji:'🏺'},
+      {id:'E2',th:'الحشرات والزواحف',emoji:'🦎'},
       {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
-      {id:'B3',th:'قريبًا',emoji:'📜'},
+      {id:'B3',th:'التاريخ',emoji:'📜'},
       {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
-      {id:'D3',th:'قريبًا',emoji:'📚'},
+      {id:'D3',th:'الأدب',emoji:'📚'},
       {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
-      {id:'A4',th:'قريبًا',emoji:'⭐'},         {id:'B4',th:'قريبًا',emoji:'🦁'},
-      {id:'C4',th:'قريبًا',emoji:'⚙'},        {id:'D4',th:'قريبًا',emoji:'🌦'},
-      {id:'E4',th:'قريبًا',emoji:'🏗'},
-      {id:'A5',th:'قريبًا',emoji:'🎀'},        {id:'B5',th:'قريبًا',emoji:'🏔'},
+      {id:'A4',th:'شخصية مشهورة',emoji:'⭐'},         {id:'B4',th:'الشجاعة',emoji:'🦁'},
+      {id:'C4',th:'التكنولوجيا',emoji:'⚙'},        {id:'D4',th:'الطقس والمناخ',emoji:'🌦'},
+      {id:'E4',th:'العمارة',emoji:'🏗'},
+      {id:'A5',th:'الديكور',emoji:'🎀'},        {id:'B5',th:'الجبل والصحراء',emoji:'🏔'},
       {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
-      {id:'D5',th:'قريبًا',emoji:'🐟'},    {id:'E5',th:'قريبًا',emoji:'📢'}
+      {id:'D5',th:'السمك والبحر',emoji:'🐟'},    {id:'E5',th:'التسويق',emoji:'📢'}
     ]
   },
   5: {
     nom: "لوح الخبراء", emoji: "🎓",
     cases: [
-      {id:'A1',th:'قريبًا',emoji:'🏛'},     {id:'B1',th:'قريبًا',emoji:'🎨'},
-      {id:'C1',th:'قريبًا',emoji:'📜'},          {id:'D1',th:'قريبًا',emoji:'🔭'},
-      {id:'E1',th:'قريبًا',emoji:'⚕'},
-      {id:'A2',th:'قريبًا',emoji:'📡'},           {id:'B2',th:'قريبًا',emoji:'🎭'},
-      {id:'C2',th:'قريبًا',emoji:'💰'},          {id:'D2',th:'قريبًا',emoji:'⚖'},
-      {id:'E2',th:'قريبًا',emoji:'☪'},
-      {id:'A3',th:'قريبًا',emoji:'💡'},         {id:'B3',th:'قريبًا',emoji:'🏭'},
-      {id:'C3',th:'قريبًا',emoji:'🌍'},      {id:'D3',th:'قريبًا',emoji:'✈'},
-      {id:'E3',th:'قريبًا',emoji:'🍽'},
-      {id:'A4',th:'قريبًا',emoji:'⚓'},        {id:'B4',th:'قريبًا',emoji:'📖'},
-      {id:'C4',th:'قريبًا',emoji:'🛒'},          {id:'D4',th:'قريبًا',emoji:'🏆'},
-      {id:'E4',th:'قريبًا',emoji:'🏘'},
-      {id:'A5',th:'قريبًا',emoji:'⚔'},          {id:'B5',th:'قريبًا',emoji:'⚡'},
-      {id:'C5',th:'قريبًا',emoji:'🌾'},          {id:'D5',th:'قريبًا',emoji:'🧵'},
-      {id:'E5',th:'قريبًا',emoji:'🤝'},
+      {id:'A1',th:'العمارة',emoji:'🏛'},     {id:'B1',th:'الفن',emoji:'🎨'},
+      {id:'C1',th:'التاريخ',emoji:'📜'},          {id:'D1',th:'الفلك',emoji:'🔭'},
+      {id:'E1',th:'الطب',emoji:'⚕'},
+      {id:'A2',th:'الاتصال',emoji:'📡'},           {id:'B2',th:'المسرح',emoji:'🎭'},
+      {id:'C2',th:'الاقتصاد',emoji:'💰'},          {id:'D2',th:'القانون',emoji:'⚖'},
+      {id:'E2',th:'الدين',emoji:'☪'},
+      {id:'A3',th:'فكرة ومفهوم',emoji:'💡'},         {id:'B3',th:'الصناعة',emoji:'🏭'},
+      {id:'C3',th:'الإنسانية',emoji:'🌍'},      {id:'D3',th:'السياحة',emoji:'✈'},
+      {id:'E3',th:'فن الطبخ',emoji:'🍽'},
+      {id:'A4',th:'الملاحة',emoji:'⚓'},        {id:'B4',th:'الأدب',emoji:'📖'},
+      {id:'C4',th:'التجارة',emoji:'🛒'},          {id:'D4',th:'الرياضة',emoji:'🏆'},
+      {id:'E4',th:'التعمير',emoji:'🏘'},
+      {id:'A5',th:'الدفاع',emoji:'⚔'},          {id:'B5',th:'الطاقة',emoji:'⚡'},
+      {id:'C5',th:'علم الفلاحة',emoji:'🌾'},          {id:'D5',th:'النسيج',emoji:'🧵'},
+      {id:'E5',th:'الدبلوماسية',emoji:'🤝'},
     ]
   }
 };
@@ -94009,7 +94009,7 @@ function _confirmerMotFinalize(word, pIdx) {
   if (ev.valid && ev.score > 0) {
     G.passCount = 0; // reset quand un mot est validé
     G.themeHistory.unshift({
-      theme: G.curCase.free ? '★ MOT LIBRE' : (G.curCase.th||'?'),
+      theme: G.curCase.free ? '★ كلمة حرة' : (G.curCase.th||'?'),
       player: p.name, word: word, pts: ev.score
     });
     renderHistPanel();
@@ -94022,7 +94022,7 @@ function _confirmerMotFinalize(word, pIdx) {
     log('⚠ Cagnotte épuisée — phase finale !', 'inf');
   }
   // Sauvegarder le thème AVANT drawCase pour le log
-  const themePubLie = G.curCase ? (G.curCase.free ? 'MOT LIBRE' : G.curCase.th) : '?';
+  const themePubLie = G.curCase ? (G.curCase.free ? 'كلمة حرة' : G.curCase.th) : '?';
   const caseIdPubLie = G.curCase ? G.curCase.id : null;
 
   drawCase(false);
@@ -94241,7 +94241,7 @@ function botFinish(p, best, bestS) {
     showFloat('+' + bestS);
     snd('ok');
     G.themeHistory.unshift({
-      theme: G.curCase.free ? '★ MOT LIBRE' : (G.curCase.th||'?'),
+      theme: G.curCase.free ? '★ كلمة حرة' : (G.curCase.th||'?'),
       player: p.name, word: best.word, pts: bestS
     });
     renderHistPanel();
@@ -94824,7 +94824,7 @@ function renderMaqGrille(n) {
     var d = document.createElement('div');
     d.className = 'maq-cell' + (cas.free ? ' free' : '');
     var label = cas.free
-      ? 'MOT ' + (cas.minL === cas.maxL ? cas.minL + 'L' : cas.minL + '-' + cas.maxL + 'L') + (cas.bonus ? ' ★' : '')
+      ? 'كلمة ' + (cas.minL === cas.maxL ? cas.minL + 'ح' : cas.minL + '-' + cas.maxL + 'ح') + (cas.bonus ? ' ★+' + cas.bonus : '')
       : cas.th;
     d.innerHTML =
       '<div class="maq-cell-id">' + cas.id + '</div>' +
@@ -96200,7 +96200,7 @@ function traiterReponseDefi(accepte) {
     showFloat('+' + score); snd('ok');
     G.passCount = 0;
     G.themeHistory.unshift({
-      theme: G.curCase && G.curCase.free ? '★ MOT LIBRE' : (G.curCase && G.curCase.th ? G.curCase.th : '?'),
+      theme: G.curCase && G.curCase.free ? '★ كلمة حرة' : (G.curCase && G.curCase.th ? G.curCase.th : '?'),
       player: p.name, word: word, pts: score
     });
     log('✅ "' + word + '" accepté — +' + score + ' pts !', 'ok');
@@ -96218,7 +96218,7 @@ function traiterReponseDefi(accepte) {
     log('⚠ Cagnotte épuisée — phase finale !', 'inf');
   }
 
-  const themePubLie = G.curCase ? (G.curCase.free ? 'MOT LIBRE' : G.curCase.th) : '?';
+  const themePubLie = G.curCase ? (G.curCase.free ? 'كلمة حرة' : G.curCase.th) : '?';
   const caseIdPubLie = G.curCase ? G.curCase.id : null;
 
   drawCase(false);
