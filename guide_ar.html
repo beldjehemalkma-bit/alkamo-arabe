@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل لعبة ALKAMO — القواعد والتنظيم</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--v:#534AB7;--vl:#7F77DD;--vd:#2E2575;--g:#C8A020;--gl:#FAD060;--gr:#1D9E75;--grl:#4DC99A;--dk:#0A0818;--wh:#FFFFFF;--gy:#888;--lg:#CCC;--bg:#F5F3FF}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--dk);color:var(--wh);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+background:radial-gradient(ellipse 80% 60% at 20% 20%,rgba(83,74,183,.15) 0%,transparent 60%),
+radial-gradient(ellipse 60% 50% at 80% 80%,rgba(29,158,117,.1) 0%,transparent 60%);pointer-events:none}
+body::after{content:'';position:fixed;inset:0;z-index:0;
+background:repeating-linear-gradient(90deg,transparent 0px,transparent 58px,rgba(255,255,255,.015) 58px,rgba(255,255,255,.015) 70px);pointer-events:none}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 5%;
+border-bottom:1px solid rgba(200,160,32,.12);backdrop-filter:blur(20px);
+position:sticky;top:0;z-index:100;background:rgba(10,8,24,.9)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;
+font-weight:800;font-size:1.2rem;color:var(--gl);letter-spacing:3px;text-decoration:none}
+.nav-tile{width:22px;height:26px;border-radius:4px;display:flex;align-items:center;
+justify-content:center;font-weight:800;font-size:.75rem;color:#fff}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.88rem;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gl)}
+.nav-cta{background:linear-gradient(135deg,var(--v),#2E2575);color:#fff;padding:8px 18px;
+border-radius:50px;text-decoration:none;font-weight:500;font-size:.88rem;
+border:1px solid rgba(127,119,221,.4);transition:all .2s}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(83,74,183,.4)}
+.hero{padding:50px 5% 30px;text-align:center;position:relative;z-index:1}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem);margin-bottom:10px}
+.hero h1 span{color:var(--gl)}
+.hero p{color:rgba(255,255,255,.5);font-size:.95rem;margin-bottom:28px}
+.dl-btn{display:inline-flex;align-items:center;gap:10px;
+background:linear-gradient(135deg,var(--g),var(--vd));
+color:#fff;padding:14px 28px;border-radius:50px;text-decoration:none;
+font-weight:600;font-size:.95rem;border:1px solid rgba(200,160,32,.4);
+box-shadow:0 8px 30px rgba(200,160,32,.25);transition:all .25s;margin-bottom:40px}
+.dl-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,160,32,.4)}
+.guide-wrap{max-width:780px;margin:0 auto;padding:0 5% 80px;position:relative;z-index:1}
+.g-section{margin-bottom:40px}
+.g-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:12px;
+border-bottom:2px solid rgba(200,160,32,.2)}
+.g-num{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;
+justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;
+color:#fff;flex-shrink:0}
+.g-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem}
+.g-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+border-radius:14px;padding:20px 24px;margin-bottom:12px}
+.g-card.gold{background:rgba(200,160,32,.07);border-color:rgba(200,160,32,.2);
+border-left:4px solid var(--g)}
+.g-card.violet{background:rgba(83,74,183,.08);border-color:rgba(83,74,183,.2);
+border-left:4px solid var(--v)}
+.g-card.green{background:rgba(29,158,117,.07);border-color:rgba(29,158,117,.2);
+border-left:4px solid var(--gr)}
+.g-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.g-card p{font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:8px}
+.g-card p:last-child{margin-bottom:0}
+.g-card strong{color:var(--gl)}
+.g-card em{color:var(--grl);font-style:normal}
+.art-list{display:flex;flex-direction:column;gap:8px}
+.art-item{display:flex;gap:12px;padding:10px 16px;
+background:rgba(255,255,255,.03);border-radius:10px;
+border-bottom:1px solid rgba(255,255,255,.05)}
+.art-num{min-width:56px;font-family:'Syne',sans-serif;font-weight:700;
+font-size:.8rem;color:var(--gl);padding-top:2px}
+.art-txt{font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.7}
+.letters-table{width:100%;border-collapse:collapse;margin-top:16px}
+.letters-table th{background:var(--v);color:#fff;padding:10px 14px;
+text-align:left;font-size:.85rem;font-weight:700}
+.letters-table th:last-child{text-align:right}
+.letters-table td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.06);
+font-size:.85rem;color:rgba(255,255,255,.8)}
+.letters-table tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.letters-table td:first-child{color:var(--vl);font-weight:700}
+.letters-table td:last-child{text-align:right;color:var(--grl);font-weight:600}
+.champ-ex{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.champ-row{background:rgba(255,255,255,.04);border-radius:8px;padding:10px 14px}
+.champ-key{font-size:.75rem;font-weight:700;margin-bottom:4px}
+.champ-val{font-size:.85rem;color:rgba(255,255,255,.65)}
+.cagnotte-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.cagnotte-card{border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,.1)}
+
+/* === SECTION HISTORIQUE === */
+.historique-section{margin-bottom:40px;position:relative}
+.historique-inner{
+  border-radius:20px;
+  padding:40px 36px;
+  background:linear-gradient(135deg,rgba(10,8,24,.95) 0%,rgba(30,20,70,.6) 100%);
+  border:1px solid rgba(200,160,32,.25);
+  position:relative;
+  overflow:hidden;
+}
+.historique-inner::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:repeating-linear-gradient(
+    45deg,transparent 0,transparent 18px,
+    rgba(200,160,32,.025) 18px,rgba(200,160,32,.025) 19px);
+  pointer-events:none;
+}
+.historique-inner::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--g),var(--vl),transparent);
+  border-radius:20px 20px 0 0;
+}
+.hist-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.75rem;
+  letter-spacing:4px;color:var(--gl);
+  background:rgba(200,160,32,.1);border:1px solid rgba(200,160,32,.3);
+  padding:6px 16px;border-radius:50px;margin-bottom:28px;
+  text-transform:uppercase;
+}
+.hist-quote{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1rem,2.2vw,1.2rem);
+  font-weight:700;
+  font-style:italic;
+  color:var(--gl);
+  line-height:1.6;
+  text-align:center;
+  margin-bottom:32px;
+  padding:0 12px;
+  position:relative;z-index:1;
+}
+.hist-quote::before{
+  content:'\201C';
+  font-size:5rem;line-height:0;vertical-align:-.4em;
+  color:rgba(200,160,32,.15);font-style:normal;margin-right:4px;
+}
+.hist-quote::after{
+  content:'\201D';
+  font-size:5rem;line-height:0;vertical-align:-.4em;
+  color:rgba(200,160,32,.15);font-style:normal;margin-left:4px;
+}
+.hist-divider{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--g),transparent);
+  margin:0 auto 28px;
+}
+.hist-body{
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;z-index:1;
+}
+.hist-para{
+  font-size:.95rem;
+  color:rgba(255,255,255,.75);
+  line-height:1.9;
+  text-align:center;
+  padding:0 8px;
+}
+.hist-para strong{color:var(--gl)}
+.hist-tagline{
+  display:flex;gap:20px;justify-content:center;
+  flex-wrap:wrap;margin-top:12px;
+}
+.hist-tag{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Syne',sans-serif;font-size:.8rem;
+  font-weight:600;color:rgba(255,255,255,.5);
+  letter-spacing:1px;
+}
+.hist-tag span{color:var(--gl);font-size:1rem}
+
+@media(max-width:640px){
+.nav-links{display:none}
+.champ-ex{grid-template-columns:1fr}
+.cagnotte-grid{grid-template-columns:1fr}
+.historique-inner{padding:28px 20px}
+.hist-tagline{gap:14px}
+}
+</style>
+</head>
+<body>
+<nav>
+<a href="index.html" class="nav-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAGkCAYAAAAcz78aAAAhfUlEQVR4nO3da5gU5Zn/8bt7zkdgZmCGAWEggshZARlFDgpR14gmRDGLboLxMrtxs+uuicQ1mzWaxCV4uP7xb7LZdV1xoxgxmaxiEt2IR0QG8RRQFI00Z5gBZpjzufcFtPZ0V89UdVdXPU/V9/OGi+nu6pqnqn59z15+vv0AAAAASUVORK5CYII=" alt="ALKAMO" style="height:34px;width:auto;filter:drop-shadow(0 2px 6px rgba(200,160,32,.4))"> ALKAMO</a>
+<ul class="nav-links">
+<li><a href="index_ar.html">الرئيسية</a></li>
+<li><a href="dictionnaire_ar.html">القاموس</a></li>
+<li><a href="guide_ar.html" class="active">دليل اللعبة</a></li>
+<li><a href="index_ar.html#contact">اتصل بنا</a></li>
+</ul>
+<a href="jeu_ar.html" class="nav-cta">🎮 العب</a>
+</nav>
+
+<div class="hero">
+<h1>دليل لعبة <span>ALKAMO</span></h1>
+<p>القواعد الكاملة، التنظيم الرسمي، وقيمة الأحرف</p>
+<a href="guide_ar.docx" download="ALKAMO_Guide_Jeu_AR.docx" class="dl-btn">
+📥 تحميل الدليل (Word A5 — قابل للطباعة)
+</a>
+</div>
+
+<div class="guide-wrap">
+
+<!-- ==================== TABLEAU INTRO ==================== -->
+<div class="g-section" style="margin-bottom:28px">
+<table style="width:100%;border-collapse:collapse;font-size:.9rem">
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600;width:45%">اللاعبون</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">من 2 إلى 4 لاعبين</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">السن</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">من 12 سنة فما فوق</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">المدة</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">من 30 دقيقة إلى ساعتين</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">الأحرف في الصندوق</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">188 حرفًا + 3 أحرف بديلة</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">المواضيع</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">20 لكل لوح من الألواح الأربعة + 25 للوح الخبير</td>
+</tr>
+<tr style="background:rgba(255,255,255,.02)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">الخانات الحرة</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">5 لكل لوح (لوح الخبير لا يحتوي على أي منها)</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,.07)">
+  <td style="padding:10px 14px;color:rgba(255,255,255,.5);font-weight:600">رموز حق التخطي</td>
+  <td style="padding:10px 14px;color:rgba(255,255,255,.85)">3 لكل لاعب</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ==================== FIN TABLEAU INTRO ==================== -->
+
+<!-- ==================== SECTION HISTORIQUE ==================== -->
+<div class="historique-section">
+<div class="g-head">
+<div class="g-num" style="background:linear-gradient(135deg,#C8A020,#8B6010)">✦</div>
+<div class="g-title">نبذة تاريخية</div>
+</div>
+<div class="historique-inner">
+
+<div style="text-align:center">
+<div class="hist-badge">✦ &nbsp; الأصل والرؤية &nbsp; ✦</div>
+</div>
+
+<p class="hist-quote">حيث تحاصر الجدران، تولد لعبة الكلمة المناسبة</p>
+
+<div class="hist-divider"></div>
+
+<div class="hist-body">
+<p class="hist-para">
+وُلدت <strong>ALKAMO</strong> من فكرة بسيطة لكنها قوية:
+تحويل الصمت والتفكير إلى لعبة كلمات غنية واستراتيجية.
+</p>
+<p class="hist-para">
+صُممت <strong>ALKAMO</strong> لتحفيز الثقافة العامة، وإثراء المفردات، وتنمية
+التفكير الاستراتيجي — إنها أكثر من مجرد لعبة،
+إنها مغامرة فكرية.
+</p>
+<p class="hist-para">
+كل جولة فريدة، وكل كلمة انتصار،
+وكل موضوع اكتشاف جديد.
+</p>
+</div>
+
+<div class="hist-divider" style="margin-top:28px"></div>
+
+<div class="hist-tagline">
+<div class="hist-tag"><span>◆</span> كل جولة فريدة من نوعها</div>
+<div class="hist-tag"><span>◆</span> كل كلمة هي انتصار</div>
+<div class="hist-tag"><span>◆</span> كل موضوع هو اكتشاف</div>
+</div>
+
+</div>
+</div>
+<!-- ==================== FIN HISTORIQUE ==================== -->
+
+<!-- SECTION 1 — PRINCIPE -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#534AB7">1</div>
+<div class="g-title">مبدأ اللعبة</div>
+</div>
+<div class="g-card">
+<p><strong>ALKAMO</strong> لعبة أحرف تُلعب من طرف 2 أو 3 أو 4 لاعبين. وهي أيضًا لعبة مفردات تعتمد على معرفة اللغة.</p>
+<p>تتمثل اللعبة في تكوين كلمات من الأحرف المسحوبة من <strong>صندوق L</strong>. يجب أن تنتمي الكلمة المُكوَّنة إلى المجال المعجمي أو الدلالي للموضوع المدوّن على إحدى خانات اللوح المركزي.</p>
+<p>تُسحب اللوحة المطابقة للخانة من <strong>صندوق T</strong>.</p>
+<p>إذا كوّن اللاعب الكلمة المطابقة تمامًا للخانة، يكون قد "حرث" (انظر مكافأة الحرث أدناه).</p>
+<p>إذا تعذّر عليه تكوين الكلمة المطابقة تمامًا، يمكنه تكوين كلمة من نفس المجال المعجمي (مرادف، كلمة من نفس الأسرة، من نفس المجال أو من نفس المفهوم — انظر القسم 2). الحكم، أو القاموس المرجعي، هو من يفصل في صحة الكلمة المقترحة.</p>
+</div>
+<div class="g-card violet">
+<h3>🎫 حق التخطي</h3>
+<p>في حال الصعوبة في تكوين كلمة، يمكن للاعب استخدام أحد <strong>رموز حق التخطي الثلاثة</strong> لتخطي دوره وتغيير أحرفه (انظر المادة 6).</p>
+</div>
+<div class="g-card gold">
+<h3>🌾 مكافأة الحرث</h3>
+<p>إذا كوّن اللاعب الكلمة <strong>المطابقة تمامًا</strong> المدوّنة على خانة اللوح المركزي، يكون قد <em>حرث</em> ويستفيد من <strong>ضعف قيمة الأحرف.</strong></p>
+</div>
+<div class="g-card">
+<p><strong>الموضوع المدوّن على اللوح مفرد، لكن الكلمة المُكوَّنة يمكن أن تكون بصيغة الجمع.</strong></p>
+</div>
+</div>
+
+<!-- SECTION 2 — CHAMPS LEXICAUX -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#1D9E75">2</div>
+<div class="g-title">المجالات المعجمية</div>
+</div>
+<div class="g-card">
+<p>المجال المعجمي هو شبكة واسعة من الكلمات المرتبطة بموضوع مشترك. لا يتكوّن فقط من المرادفات، بل أيضًا من كلمات من نفس الأسرة، ومن نفس المجال، ومن نفس المفهوم.</p>
+</div>
+<div class="champ-ex">
+<div class="champ-row">
+<div class="champ-key" style="color:#534AB7">مرادفات</div>
+<div class="champ-val">كلمات ذات معنى متشابه<br><em>"مسكن" → "بيت"</em></div>
+</div>
+<div class="champ-row">
+<div class="champ-key" style="color:#1D9E75">نفس الأسرة</div>
+<div class="champ-val">كلمات من نفس الجذر<br><em>صندوق، صندوق صغير، أمين الصندوق</em></div>
+</div>
+<div class="champ-row">
+<div class="champ-key" style="color:#1565C0">نفس المجال</div>
+<div class="champ-val">كلمات خاصة بالمجال<br><em>جندي، ثكنة، فرقة</em></div>
+</div>
+<div class="champ-row">
+<div class="champ-key" style="color:#8B2020">نفس المفهوم</div>
+<div class="champ-val">كلمات أكثر عمومية<br><em>جرح، عنف، عداء</em></div>
+</div>
+</div>
+<div class="g-card violet" style="margin-top:12px">
+<h3>مثال — المجال المعجمي لكلمة "جيش"</h3>
+<p><strong style="color:#7F77DD">مرادفات:</strong> حرب، نزاع، قتال</p>
+<p><strong style="color:#1D9E75">نفس الأسرة:</strong> سلاح، درع، هدنة</p>
+<p><strong style="color:#1565C0">نفس المجال:</strong> جندي، ثكنة، فرقة</p>
+<p><strong style="color:#8B2020">نفس المفهوم:</strong> جرح، عنف، عداء</p>
+</div>
+<div class="g-card" style="margin-top:12px;border-left:3px solid rgba(200,160,32,.5)">
+<p><strong style="color:var(--gl)">ملاحظة:</strong> الكلمات التي يرتبط معناها أو دلالتها بالموضوع المحدد صالحة أيضًا.</p>
+</div>
+</div>
+
+<!-- SECTION 3 — SUPER MOT -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#C8A020">3</div>
+<div class="g-title">الكلمة الخارقة والمكافآت الخاصة</div>
+</div>
+<div class="g-card gold">
+<h3>⭐ الكلمة الخارقة</h3>
+<p>كل لاعب ينجح في تكوين كلمة من <strong>10 أحرف</strong> — أي كل الأحرف التي بحوزته — يستفيد من <strong>ضعف قيمة الأحرف.</strong></p>
+<p>يعلن اللاعب "كلمة خارقة" ويضع أحرفه دون سحب موضوع. يمكن الحصول على هذه المكافأة عدة مرات من طرف نفس اللاعب خلال الجولة.</p>
+</div>
+<div class="g-card violet">
+<h3>🎯 مكافأة الخانات الخاصة</h3>
+<p><strong>الخانتان C1 وC5:</strong> مكافأة قدرها <strong style="color:#FAD060">+10 نقاط</strong> إضافة إلى قيمة الأحرف.</p>
+<p><strong style="color:#1D9E75">مكافأة الحرث:</strong> تذكير (انظر القسم 1) — مضاعفة النقاط.</p>
+</div>
+</div>
+
+<!-- SECTION 4 — RÈGLEMENT -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#534AB7">4</div>
+<div class="g-title">النظام الرسمي</div>
+</div>
+<div class="art-list">
+<div class="art-item"><div class="art-num">المادة 1</div><div class="art-txt">يوضع اللوح الرئيسي في وسط الطاولة، في متناول جميع اللاعبين. يحصل كل لاعب على لوح فردي، وحامل — يرتب ويخفي عليه أحرفه المسحوبة عن باقي اللاعبين — و3 رموز حق التخطي. قبل البدء، يتفق اللاعبون بالإجماع على مدة الجولة، المحددة بين 30 دقيقة وساعتين.</div></div>
+<div class="art-item"><div class="art-num">المادة 1أ</div><div class="art-txt">يُنصح بتعيين حكم لكنه غير إلزامي. إذا تم تعيينه (بالانتخاب أو التطوع)، يكون مسؤولاً عن الصناديق والساعة الرملية، وقراره نهائي في حال وجود نزاع.</div></div>
+<div class="art-item"><div class="art-num">المادة 2</div><div class="art-txt">يبدأ اللاعب الذي سحب الحرف الأقرب إلى "A". تدور اللعبة عكس اتجاه عقارب الساعة.</div></div>
+<div class="art-item"><div class="art-num">المادة 2أ</div><div class="art-txt">في بداية الجولة، يسحب كل لاعب 10 أحرف من صندوق L. يسحب اللاعب الأول لوحة الموضوع من صندوق T.</div></div>
+<div class="art-item"><div class="art-num">المادة 3</div><div class="art-txt">يضع اللاعب الذي كوّن كلمة لوحة الموضوع المطابقة على اللوح المركزي، في موضع الخانة الملعوبة، ويضع كلمته أفقيًا على لوحه الفردي.</div></div>
+<div class="art-item"><div class="art-num">المادة 3أ</div><div class="art-txt">إذا تخطى لاعب دوره، يختار اللاعب التالي بين لعب الموضوع السابق أو سحب موضوع جديد. يُعاد الموضوع غير الملعوب إلى الصندوق.</div></div>
+<div class="art-item"><div class="art-num">المادة 3ب</div><div class="art-txt">الموضوع المدوّن على اللوح مفرد. يمكن أن تكون الكلمة المُكوَّنة بصيغة الجمع.</div></div>
+<div class="art-item"><div class="art-num">المادة 4</div><div class="art-txt">بعد وضع كلمته، يكمل اللاعب مجموعة أحرفه حتى 10، بسحب عدد الأحرف المستخدمة في تكوين كلمته من صندوق L. يمكن الاحتفاظ بالأحرف المتبقية بحوزته أو استبدالها بأحرف جديدة تُسحب عشوائيًا (دون معاملة مع خصم — انظر القسم 5 للتبادلات بين اللاعبين).</div></div>
+<div class="art-item"><div class="art-num">المادة 5</div><div class="art-txt">تحل الأحرف البديلة الثلاثة محل أي حرف. قيمتها في اللعب معدومة (قيمة البيع: 10 نقاط — انظر القسم 5).</div></div>
+<div class="art-item"><div class="art-num">المادة 6</div><div class="art-txt">يملك كل لاعب 3 رموز حق التخطي طوال الجولة. عندما لا يعود يملك أيًا منها ويعجز عن تكوين كلمة، يُعاقب بخصم 5 نقاط، لكنه يحتفظ بحق استبدال كل أحرفه أو جزء منها في صندوق L.</div></div>
+<div class="art-item"><div class="art-num">المادة 6أ</div><div class="art-txt">يمكن للاعب العاجز عن تكوين كلمة استخدام حق التخطي: يعلن أنه يتخطى دوره، ويسلّم رمز حق التخطي للحكم، ثم يستبدل بحرية كل أحرفه أو جزء منها في صندوق L. يُحتسب هذا الدور متخطى (انظر المادة 3أ): لا تُسجَّل أي نقطة.</div></div>
+<div class="art-item"><div class="art-num">المادة 7</div><div class="art-txt">لا يُسمح بالأفعال إلا في صيغة المصدر. الأسماء الخاصة، وأسماء الأماكن، والكلمات المركبة، والأحرف الأولى غير صالحة.</div></div>
+</div>
+</div>
+
+<!-- SECTION 5 — TRANSACTIONS -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#1D9E75">5</div>
+<div class="g-title">معاملات الشراء والبيع والتبادل</div>
+</div>
+<div class="g-card green">
+<p>قبل تكوين كلمته، يمكن للاعب طلب حرف. عند الضرورة، يمكنه بذلك شراء حرف من خصم. يُوجَّه الطلب إلى الجار الأيمن؛ وإذا رفض، ينتقل الطلب إلى اللاعب التالي.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px">
+<div class="g-card" style="border-top:3px solid #1D9E75">
+<h3 style="color:#4DC99A">البيع</h3>
+<p>يختار اللاعب المطلوب منه بيع الحرف. يُتفاوض على السعر بين قيمة الحرف وضعفها؛ يخسر المشتري هذه النقاط ويكسبها البائع. يعيد المشتري بعدها حرفًا إلى صندوق L، ويسحب البائع حرفًا جديدًا منه، حتى يعود كل منهما إلى 10 أحرف.</p>
+</div>
+<div class="g-card" style="border-top:3px solid #C8A020">
+<h3 style="color:#FAD060">التبادل</h3>
+<p>يختار اللاعب المطلوب منه استبدال الحرف بحرف آخر من اختياره. ينتقل الحرفان ببساطة من يد إلى أخرى، دون أي نقل للنقاط. يحتفظ كل لاعب بأحرفه العشرة.</p>
+</div>
+</div>
+<div class="g-card" style="margin-top:12px">
+<p><strong>مهم:</strong> يجب استخدام أي حرف تم الحصول عليه في كلمة الموضوع الجاري. في حال تخطي الدور دون تكوين الكلمة، تُلغى المعاملة.</p>
+<p>يمكن لكل لاعب المشاركة في 3 معاملات كحد أقصى في الجولة، كطالب أو بائع أو شريك تبادل. بمجرد استخدامها، توضع قطعة الشراء-البيع-التبادل المطابقة جانبًا ولن تُلعب مرة أخرى. قيمة الحرف البديل: <strong>10 نقاط.</strong></p>
+</div>
+</div>
+
+<!-- SECTION 6 — FIN DE PARTIE -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#C8A020">6</div>
+<div class="g-title">نهاية الجولة والاحتساب</div>
+</div>
+<div class="g-card">
+<p><strong>تنتهي الجولة عندما:</strong></p>
+<ul style="list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px">
+<li style="display:flex;gap:8px"><span style="color:#FAD060">◆</span><span>لا تبقى أي لوحات في صندوق T</span></li>
+<li style="display:flex;gap:8px"><span style="color:#FAD060">◆</span><span>لا يعود لدى لاعب أي أحرف بعد السحب الإضافي</span></li>
+<li style="display:flex;gap:8px"><span style="color:#FAD060">◆</span><span>لا تبقى أي أحرف في صندوق L</span></li>
+<li style="display:flex;gap:8px"><span style="color:#FAD060">◆</span><span>اللعبة مسدودة: يعلن جميع اللاعبين عجزهم عن تكوين أي كلمة</span></li>
+<li style="display:flex;gap:8px"><span style="color:#FAD060">◆</span><span>انتهاء الوقت المتفق عليه بالإجماع في بداية الجولة (بين 30 دقيقة وساعتين)</span></li>
+</ul>
+</div>
+<div class="g-card gold">
+<h3>المرحلة الأخيرة</h3>
+<p>بعد نفاد صندوق T، يُكوّن اللاعبون كلمات حرة حتى نفاد الأحرف. تُخصم قيمة الأحرف المتبقية <strong>من نقاط</strong> كل لاعب.</p>
+</div>
+<div class="g-card green" style="margin-top:12px;text-align:center">
+<p style="font-size:1.1rem"><strong style="color:#FAD060">🌾 يُعلن اللاعب صاحب أكبر عدد من النقاط "حارث الموسم"!</strong></p>
+</div>
+</div>
+
+<!-- SECTION 7 — RECOMMANDATIONS -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#534AB7">7</div>
+<div class="g-title">توصيات وتحكيم</div>
+</div>
+<div class="g-card violet">
+<h3>القاموس المعجمي، مرجع اللعبة</h3>
+<p>تعتمد اللعبة على قاموس معجمي مرجعي للتحقق من صحة الكلمات المقترحة. تبقى هذه القائمة إرشادية وغير شاملة: من الممكن ألا تظهر فيها كلمة تنتمي فعلاً إلى المجال المعجمي للموضوع.</p>
+<p>في هذه الحالة، يمكن للحكم — أو لمجموع اللاعبين في غيابه — التحقق من صحة هذه الكلمة إذا اقتنع بارتباطها بالموضوع.</p>
+</div>
+<div class="g-card violet">
+<h3>في غياب الحكم</h3>
+<p><strong>يُحل أي نزاع بإجماع اللاعبين.</strong></p>
+</div>
+<div class="g-card gold">
+<p><strong>✦ الصدق بين اللاعبين هو أساس الجولة الجيدة. المكسب غير المشروع لا يُثمر أبدًا.</strong></p>
+</div>
+</div>
+
+<!-- SECTION 8 — LETTRES -->
+<div class="g-section">
+<div class="g-head">
+<div class="g-num" style="background:#1D9E75">8</div>
+<div class="g-title">الأحرف، القيم والصناديق</div>
+</div>
+<div class="cagnotte-grid">
+<div class="cagnotte-card" style="background:rgba(83,74,183,.1);border-color:rgba(83,74,183,.2)">
+<h3 style="font-family:'Syne',sans-serif;font-size:1rem;color:#7F77DD;margin-bottom:8px">صندوق L — الأحرف</h3>
+<p style="font-size:.9rem;color:rgba(255,255,255,.7)">188 حرفًا + 3 أحرف بديلة</p>
+</div>
+<div class="cagnotte-card" style="background:rgba(29,158,117,.1);border-color:rgba(29,158,117,.2)">
+<h3 style="font-family:'Syne',sans-serif;font-size:1rem;color:#4DC99A;margin-bottom:8px">صندوق T — المواضيع</h3>
+<p style="font-size:.9rem;color:rgba(255,255,255,.7)">20 موضوعًا + 5 كلمات حرة لكل من الألواح الأربعة + 25 موضوعًا للوح الخبير</p>
+</div>
+</div>
+<table class="letters-table">
+<thead>
+<tr><th>الحرف/الأحرف</th><th>العدد</th><th>القيمة</th></tr>
+</thead>
+<tbody>
+<tr><td>A</td><td>20</td><td>2 نقطة</td></tr>
+<tr><td>E</td><td>26</td><td>2 نقطة</td></tr>
+<tr><td>S</td><td>16</td><td>2 نقطة</td></tr>
+<tr><td>I</td><td>14</td><td>2 نقطة</td></tr>
+<tr><td>O, U</td><td>12 لكل واحد</td><td>2 نقطة</td></tr>
+<tr><td>L, T, M, N, R</td><td>7 لكل واحد</td><td>6 نقاط</td></tr>
+<tr><td>C, B, D, F, G, H, P</td><td>5 لكل واحد</td><td>6 نقاط</td></tr>
+<tr><td>J, V</td><td>3 لكل واحد</td><td>8 نقاط</td></tr>
+<tr><td>K, Q, W, X, Y, Z</td><td>2 لكل واحد</td><td>10 نقاط</td></tr>
+<tr><td>حرف بديل</td><td>3</td><td>0 نقطة (بيع: 10 نقاط)</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- BOUTON FINAL -->
+<div style="text-align:center;padding:40px 0">
+<a href="guide_ar.docx" download="ALKAMO_Guide_Jeu_AR.docx" class="dl-btn">
+📥 تحميل الدليل الكامل (Word A5)
+</a>
+<br><br>
+<a href="jeu_ar.html" style="display:inline-flex;align-items:center;gap:8px;
+background:linear-gradient(135deg,#534AB7,#2E2575);color:#fff;
+padding:14px 28px;border-radius:50px;text-decoration:none;font-weight:600;
+border:1px solid rgba(127,119,221,.4)">
+🎮 العب ALKAMO
+</a>
+</div>
+
+</div>
+
+<footer style="padding:28px 5%;text-align:center;border-top:1px solid rgba(255,255,255,.06);
+color:rgba(255,255,255,.3);font-size:.82rem;position:relative;z-index:1">
+<p>© 2025 <span style="color:#FAD060">ALKAMO</span> — لعبة الكلمات — جميع الحقوق محفوظة</p>
+<p style="margin-top:4px;font-style:italic;font-size:.75rem">حيث تحاصر الجدران، تولد لعبة الكلمة المناسبة</p>
+</footer>
+</body>
+</html>
