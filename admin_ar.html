@@ -374,7 +374,7 @@ let dicoData = null;
 const MAQUETTE_COLORS = { M1: '#7F77DD', M2: '#1D9E75', M3: '#C8A020', M4: '#E05050', M5: '#888' };
 
 function initAdmin() {
-  fetch('dictionnaire.json')
+  fetch('dictionnaire_ar.json')
     .then(r => r.json())
     .then(data => {
       dicoData = data;
@@ -383,7 +383,7 @@ function initAdmin() {
       analyserQualite(data);
     })
     .catch(() => {
-      document.getElementById('stats-loading').textContent = '❌ تعذّر تحميل dictionnaire.json';
+      document.getElementById('stats-loading').textContent = '❌ تعذّر تحميل dictionnaire_ar.json';
     });
 }
 
