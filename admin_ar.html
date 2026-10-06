@@ -254,7 +254,7 @@ nav {
         <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px">
           الملف جاهز. حمّله ثم ارفعه على GitHub.
         </p>
-        <button class="btn btn-primary" onclick="downloadJSON()">⬇️ تحميل dictionnaire.json</button>
+        <button class="btn btn-primary" onclick="downloadJSON()">⬇️ تحميل dictionnaire_ar.json</button>
         <button class="btn btn-gold" onclick="genererPDFDictionnaire()" style="margin-top:10px">📄 إنشاء ملف PDF للقاموس</button>
         <button class="btn btn-gold" onclick="genererVerificateur()" style="margin-top:10px">📱 إنشاء المدقق (للهاتف)</button>
         <div id="pdf-alert"></div>
@@ -636,9 +636,9 @@ function downloadJSON() {
   const blob = new Blob([JSON.stringify(convJsonData, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'dictionnaire.json'; a.click();
+  a.href = url; a.download = 'dictionnaire_ar.json'; a.click();
   URL.revokeObjectURL(url);
-  showAlert('dl-alert', '✅ تم تحميل dictionnaire.json! ارفعه على GitHub.', 'success');
+  showAlert('dl-alert', '✅ تم تحميل dictionnaire_ar.json! ارفعه على GitHub.', 'success');
 }
 
 // ═══════════════════════════════════════════
