@@ -692,7 +692,7 @@ function toggleMobileMenu() {
       <div class="stat-l">مواضيع</div>
     </div>
     <div class="stat-badge">
-      <div class="stat-n" id="total-mots-index1">+70 815</div>
+      <div class="stat-n" id="total-mots-index1">+30 970</div>
       <div class="stat-l">كلمة مقبولة</div>
     </div>
     <div class="stat-badge">
@@ -774,7 +774,7 @@ function toggleMobileMenu() {
     <div class="feat-card">
       <div class="feat-icon" style="background:rgba(83,74,183,.2)">📚</div>
       <h3>قاموس مدمج</h3>
-      <p>قاموس من <span id="total-mots-index2">+70 815</span> كلمة مدمج مباشرة في اللعبة — تصفّح، تحقق، تعلّم!</p>
+      <p>قاموس من <span id="total-mots-index2">+30 970</span> كلمة مدمج مباشرة في اللعبة — تصفّح، تحقق، تعلّم!</p>
     </div>
     <div class="feat-card">
       <div class="feat-icon" style="background:rgba(29,158,117,.2)">⏱️</div>
@@ -833,7 +833,7 @@ function toggleMobileMenu() {
     <div class="gal-item" style="background:rgba(200,160,32,.08)">
       <div class="gal-placeholder">
         <span>📚</span>
-        <p>القاموس المدمج<br><span id="total-mots-index3">+70 815</span> كلمة عربية</p>
+        <p>القاموس المدمج<br><span id="total-mots-index3">+30 970</span> كلمة عربية</p>
       </div>
     </div>
     <!-- Score -->
@@ -1281,7 +1281,7 @@ window.refuserInvitation = function() {
 </script>
 
 <script>
-fetch("dictionnaire.json")
+fetch("dictionnaire_ar.json")
   .then(r => r.json())
   .then(data => {
     let total = 0;
@@ -1292,7 +1292,7 @@ fetch("dictionnaire.json")
         Object.values(themes).forEach(mots => { total += mots.length; });
       });
     }
-    const fmt = "+" + total.toLocaleString("fr-FR");
+    const fmt = "+" + total.toLocaleString("en-US");
     const ids = ["total-mots-index1","total-mots-index2","total-mots-index3"];
     ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = fmt; });
   })
