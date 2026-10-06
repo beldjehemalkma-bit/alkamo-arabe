@@ -531,14 +531,10 @@ function analyserQualite(data) {
 
 // ═══════════════════════════════════════════
 // CONVERTISSEUR EXCEL → JSON
+// Lit directement les vrais noms de thèmes arabes en ligne 1
+// de chaque feuille Mx_mots (plus de liste française figée).
 // ═══════════════════════════════════════════
-const STRUCTURE = {
-  M1: ['VÊTEMENT','CHASSE ET PECHE','LANGUE','MAMMIFÈRE','TRANSPORT','ÉCONOMIE','SPORT','RELIGION','ÉCOLE','OUTIL ET MÉTIER','POLITIQUE','MUSIQUE','MINÉRAL','MESURE ET INSTRUMENT','ARTISANAT','FRUIT','ARBRE','MÉDECINE','BÂTIMENT','PHYSIQUE'],
-  M2: ['MARINE','CHIMIE','COUTURE','GRAMMAIRE','FLEUR','INDUSTRIE','MÉTIER','ANIMAL','CUISINE','INSTITUTION','OUTIL','PÉDAGOGIE','JEU','ART ET MUSIQUE','ASTRONOMIE','ALIMENT','BOTANIQUE','ÉNERGIE','PUISSANCE','ANATOMIE'],
-  M3: ['JEU ET SPORT','TEMPS ET MÉTÉO','INFORMATIQUE','MATHÉMATIQUES','AGRICULTURE','ART','NAVIGATION','FAUNE ET FLORE','GUERRE','ADMINISTRATION','FAMILLE','PHYSIQUE ET CHIMIE','PAYS ET CAPITALES','MÉDECINE ET ANATOMIE','COMMERCE','DROIT ET JUSTICE','LITTÉRATURE','TOURISME','URBANISME','MER ET OCÉAN'],
-  M4: ['CONCEPT ET IDÉE','ÉMOTION','COULEUR','PHYSIQUE','MYTHOLOGIE','CORPS HUMAIN','CULTURE','ARCHÉOLOGIE','INSECTE ET REPTILE','HISTOIRE','LITTÉRATURE','CÉLÉBRITÉ','BRAVOURE','TECHNOLOGIE','MÉTÉO ET CLIMAT','ARCHITECTURE','DÉCORATION','MONTAGNE ET DÉSERT','POISSON ET MER','MARKETING'],
-  M5: ['ARCHITECTURE','ART','HISTOIRE','ASTRONOMIE','MÉDECINE','COMMUNICATION','THÉÂTRE','ÉCONOMIE','DROIT','RELIGION','CONCEPT ET IDÉE','INDUSTRIE','HUMANITÉ','TOURISME','GASTRONOMIE','NAVIGATION','LITTÉRATURE','COMMERCE','SPORT','URBANISME','DEFENSE','ÉNERGIE','AGRONOMIE','TEXTILE','DIPLOMATIE']
-};
+const MAQ_KEYS = ['M1', 'M2', 'M3', 'M4', 'M5'];
 
 let convJsonData = null;
 const dropZone = document.getElementById('dropZone');
@@ -563,16 +559,22 @@ function handleFile(file) {
       const wb = XLSX.read(e.target.result, { type: 'array' });
       const result = {};
       let totalMots = 0;
-      for (const [maq, themes] of Object.entries(STRUCTURE)) {
+      for (const maq of MAQ_KEYS) {
         const ws = wb.Sheets[maq + '_mots'];
         if (!ws) { showAlert('conv-alert', `❌ الورقة "${maq}_mots" غير موجودة`, 'error'); return; }
         const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
         result[maq] = {};
-        themes.forEach((theme, colIdx) => {
+        // Ligne 1 (rows[0]) = vrais noms de thèmes arabes de CE fichier.
+        // Ligne 2 (rows[1]) = formule/compteur, ignorée.
+        // Lignes 3+ (rows[2..]) = les mots.
+        const headerRow = rows[0] || [];
+        headerRow.forEach((rawTheme, colIdx) => {
+          const theme = typeof rawTheme === 'string' ? rawTheme.trim() : '';
+          if (!theme) return; // colonne vide ou sans en-tête : on l'ignore
           const mots = [];
           for (let r = 2; r < rows.length; r++) {
             const val = rows[r][colIdx];
-            if (val && typeof val === 'string' && val.trim()) mots.push(val.trim().toUpperCase());
+            if (val && typeof val === 'string' && val.trim()) mots.push(val.trim());
           }
           result[maq][theme] = mots;
           totalMots += mots.length;
