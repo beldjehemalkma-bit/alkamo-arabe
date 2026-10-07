@@ -203,7 +203,7 @@ body{font-family:'Cairo','Tajawal',sans-serif}
   <div class="dico-stats" id="dico-stats">
     <div class="dico-stat"><div class="dico-stat-n">5</div><div class="dico-stat-l">مصفوفات</div></div>
     <div class="dico-stat"><div class="dico-stat-n">105</div><div class="dico-stat-l">موضوعاً</div></div>
-    <div class="dico-stat"><div class="dico-stat-n" id="total-mots-dico">+30,970</div><div class="dico-stat-l">كلمة عربية</div></div>
+    <div class="dico-stat"><div class="dico-stat-n" id="total-mots-dico">+31,016</div><div class="dico-stat-l">كلمة عربية</div></div>
   </div>
 </div>
 
@@ -1712,7 +1712,7 @@ fetch('dictionnaire_ar.json')
         wordsEl.innerHTML = sorted.map(w => '<span class="word-tag">' + w + '</span>').join('');
       }
     });
-    const fmt = '+' + total.toLocaleString('ar-EG');
+    const fmt = '+' + total.toLocaleString('en-US');
     const el = document.getElementById('total-mots-dico');
     if (el) el.textContent = fmt;
   })
