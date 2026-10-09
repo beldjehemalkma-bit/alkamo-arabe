@@ -93933,8 +93933,8 @@ function _confirmerMotFinalize(word, pIdx) {
   if (p.letters.length === 0) { endGame(); return; }
   if (!_modeEnLigne) {
     if (ev.valid && ev.score > 0 && G.playedCaseIds && G.curCase) G.playedCaseIds.add(G.curCase.id);
-    if (G.letterBag.length === 0) { log('⚠ الصندوق L فارغ — انتهت الجولة', 'inf'); endGame(); return; }
-    if (G.playedCaseIds && G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في الصندوق T — انتهت الجولة', 'inf'); endGame(); return; }
+    if (G.letterBag.length === 0) { log('⚠ صندوق الحروف (ح) فارغ — انتهت الجولة', 'inf'); endGame(); return; }
+    if (G.playedCaseIds && G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في صندوق المواضيع (م) — انتهت الجولة', 'inf'); endGame(); return; }
   } else if (G.letterBag.length === 0 && G.phase === 'normal') {
     G.phase = 'final';
     log('⚠ Cagnotte épuisée — phase finale !', 'inf');
@@ -94168,8 +94168,8 @@ function botFinish(p, best, bestS) {
     if (p.letters.length === 0) { endGame(); return; }
     if (!_modeEnLigne && G.playedCaseIds && G.curCase) {
       G.playedCaseIds.add(G.curCase.id);
-      if (G.letterBag.length === 0) { log('⚠ الصندوق L فارغ — انتهت الجولة', 'inf'); endGame(); return; }
-      if (G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في الصندوق T — انتهت الجولة', 'inf'); endGame(); return; }
+      if (G.letterBag.length === 0) { log('⚠ صندوق الحروف (ح) فارغ — انتهت الجولة', 'inf'); endGame(); return; }
+      if (G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في صندوق المواضيع (م) — انتهت الجولة', 'inf'); endGame(); return; }
     }
   } else {
     log('🤖 ' + p.name + ' passe son tour', '');
@@ -96131,8 +96131,8 @@ function traiterReponseDefi(accepte) {
   if (p.letters.length === 0) { endGame(); return; }
   if (!_modeEnLigne) {
     if (accepte && G.playedCaseIds && G.curCase) G.playedCaseIds.add(G.curCase.id);
-    if (G.letterBag.length === 0) { log('⚠ الصندوق L فارغ — انتهت الجولة', 'inf'); endGame(); return; }
-    if (G.playedCaseIds && G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في الصندوق T — انتهت الجولة', 'inf'); endGame(); return; }
+    if (G.letterBag.length === 0) { log('⚠ صندوق الحروف (ح) فارغ — انتهت الجولة', 'inf'); endGame(); return; }
+    if (G.playedCaseIds && G.playedCaseIds.size >= CASES.length) { log('⚠ لا توجد لوحات في صندوق المواضيع (م) — انتهت الجولة', 'inf'); endGame(); return; }
   } else if (G.letterBag.length === 0 && G.phase === 'normal') {
     G.phase = 'final';
     log('⚠ Cagnotte épuisée — phase finale !', 'inf');
