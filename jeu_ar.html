@@ -4440,6 +4440,18 @@ function voirDefinitionJeu(motForme, btn) {
   var url = 'https://ar.wiktionary.org/w/api.php?action=query&redirects=1&titles=' +
     encodeURIComponent(titres.join('|')) +
     '&prop=revisions&rvprop=content&rvslots=main&format=json&origin=*';
+  function lien(titre) {
+    var a = document.createElement('a');
+    a.href = 'https://ar.wiktionary.org/wiki/' + encodeURIComponent(titre);
+    a.target = '_blank'; a.rel = 'noopener';
+    a.style.cssText = 'display:inline-block;margin-top:4px;color:var(--gold-light);font-size:.78rem;font-weight:700';
+    a.textContent = 'عرض الصفحة كاملة في ويكاموس ↗';
+    return a;
+  }
+  function ligneUtile(l) {
+    var t = l.trim();
+    return t && !/^(=|\{\{|\[\[|\*|:|;|<|__|\||!|#)/.test(t);
+  }
   fetch(url)
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -4447,43 +4459,52 @@ function voirDefinitionJeu(motForme, btn) {
         return p && p.revisions && p.revisions[0];
       });
       if (!pages.length) {
-        zone.textContent = '— لا يوجد تعريف لهذه الكلمة في ويكاموس بعد.';
+        zone.textContent = '— لا توجد صفحة لهذه الكلمة في ويكاموس بعد.';
         btn.disabled = false; return;
       }
       pages.sort(function(a, b) { return titres.indexOf(a.title) - titres.indexOf(b.title); });
       var page = pages[0];
       var slot = page.revisions[0].slots && page.revisions[0].slots.main;
       var contenu = (slot && (slot['*'] || slot.content)) || page.revisions[0]['*'] || '';
-      // section arabe seulement, si elle existe
-      var m = contenu.match(/^==\s*عربية\s*==\s*$/m);
+      // Section arabe : « == عربية == » ou le modèle {{عربية}}
       var section = contenu;
+      var m = contenu.match(/^\s*(=+\s*)?(\{\{\s*عربية\s*\}\}|عربية)(\s*=+)?\s*$/m);
       if (m) {
         var suite = contenu.slice(m.index + m[0].length);
         var fin = suite.search(/^==[^=]/m);
         section = fin === -1 ? suite : suite.slice(0, fin);
       }
-      var defs = section.split('\n')
+      var lignes = section.split('\n');
+      // 1) définitions numérotées (« # ... »)
+      var defs = lignes
         .filter(function(l) { return /^#\s*[^#*:]/.test(l.trim()); })
-        .map(function(l) { return nettoyerWikitexteAr(l.trim().replace(/^#\s*/, '')); })
-        .filter(function(x) { return x.length > 1; })
-        .slice(0, 3);
+        .map(function(l) { return nettoyerWikitexteAr(l.trim().replace(/^#\s*/, '')); });
+      // 2) à défaut : texte libre sous le titre « المعاني », puis premières lignes utiles de la section
+      if (!defs.filter(function(x) { return x.length > 1; }).length) {
+        var iMeaning = -1;
+        lignes.forEach(function(l, i) { if (iMeaning < 0 && /^=+\s*المعاني\s*=+\s*$/.test(l.trim())) iMeaning = i; });
+        var zoneTexte = iMeaning >= 0 ? lignes.slice(iMeaning + 1) : lignes;
+        defs = [];
+        for (var i = 0; i < zoneTexte.length && defs.length < 2; i++) {
+          if (iMeaning >= 0 && /^=/.test(zoneTexte[i].trim())) break;
+          if (ligneUtile(zoneTexte[i])) defs.push(nettoyerWikitexteAr(zoneTexte[i]));
+        }
+      }
+      defs = defs.filter(function(x) { return x.length > 1; }).slice(0, 3);
+      zone.textContent = '';
       if (!defs.length) {
-        zone.textContent = '— لا يوجد تعريف لهذه الكلمة في ويكاموس بعد.';
+        var d0 = document.createElement('div');
+        d0.textContent = '— توجد صفحة لهذه الكلمة، لكن دون تعريف مكتوب بعد.';
+        zone.appendChild(d0); zone.appendChild(lien(page.title));
         btn.disabled = false; return;
       }
-      zone.textContent = '';
       defs.forEach(function(d) {
         var div = document.createElement('div');
         div.style.marginBottom = '4px';
         div.textContent = '📖 ' + (d.length > 180 ? d.slice(0, 180) + '…' : d);
         zone.appendChild(div);
       });
-      var lien = document.createElement('a');
-      lien.href = 'https://ar.wiktionary.org/wiki/' + encodeURIComponent(page.title);
-      lien.target = '_blank'; lien.rel = 'noopener';
-      lien.style.cssText = 'color:var(--gold-light);font-size:.78rem;font-weight:700';
-      lien.textContent = 'عرض الصفحة كاملة في ويكاموس ↗';
-      zone.appendChild(lien);
+      zone.appendChild(lien(page.title));
       btn.style.display = 'none';
     })
     .catch(function() {
