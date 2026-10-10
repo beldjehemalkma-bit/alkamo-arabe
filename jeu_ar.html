@@ -3213,7 +3213,7 @@ function renderWord() {
   });
 
   const word = buildWord();
-  formed.textContent = word;
+  formed.textContent = disp(word);
   const ev = evalWordSync(word);
   evalEl.textContent = 'النقاط: ' + ev.score + ' — ' + ev.reason;
   evalEl.style.color = ev.valid ? 'var(--green)' : (ev.score === 0 ? 'var(--red)' : 'var(--gold-light)');
@@ -3461,6 +3461,8 @@ function openJokerModal() {
 // ═══════════════════════════════════════════
 // MOT — BUILD & EVAL
 // ═══════════════════════════════════════════
+// Affichage seulement : « ى » (alif maqsura) ne se lie jamais à la lettre suivante, pour rester reconnaissable au milieu d'un mot
+function disp(w) { return String(w).replace(/ى(?=[\u0621-\u064A])/g, 'ى\u200C'); }
 function buildWord() {
   return G.word.map(w => w.letter === '*' ? (w.jokerAs || '?') : w.letter).join('');
 }
@@ -3541,7 +3543,7 @@ function validerMot() {
   if (G.word.length < 2) { log('⚠ كوّن كلمة من حرفين على الأقل!', 'bad'); return; }
   const word = buildWord();
   const ev = evalWordSync(word);
-  document.getElementById('mv-t').textContent = 'تأكيد «' + word + '»؟';
+  document.getElementById('mv-t').textContent = 'تأكيد «' + disp(word) + '»؟';
   document.getElementById('mv-msg').innerHTML =
     'النقاط: <strong style="color:' + (ev.valid ? 'var(--gold-light)' : 'var(--red)') + '">' + ev.score + ' نقطة</strong><br>' +
     '<span style="color:' + (ev.valid ? 'var(--green)' : 'var(--red)') + '">' + ev.reason + '</span>';
@@ -3615,7 +3617,7 @@ function confirmerMot() {
     // Vérifier forme valide d'abord
     if (!estFormeValide(word)) {
       snd('err');
-      log('❌ «' + word + '» : صيغة غير مقبولة', 'bad');
+      log('❌ «' + disp(word) + '» : صيغة غير مقبولة', 'bad');
       G.word = []; G.changeSel = []; G.changeMode = false;
       renderAll();
       return;
@@ -3638,7 +3640,7 @@ function confirmerMot() {
         _confirmerMotFinalize(word, pIdx);
       } else {
         snd('err');
-        log('❌ «' + word + '» غير موجودة في القاموس', 'bad');
+        log('❌ «' + disp(word) + '» غير موجودة في القاموس', 'bad');
         G.word = []; G.changeSel = []; G.changeMode = false;
         renderAll();
       }
@@ -3667,7 +3669,7 @@ function _confirmerMotFinalize(word, pIdx) {
       return;
     }
     snd('err');
-    log('❌ «' + word + '» غير معروفة.', 'bad');
+    log('❌ «' + disp(word) + '» غير معروفة.', 'bad');
   }
   G.word = []; G.changeSel = []; G.changeMode = false;
   renderAll(); // forcer le rafraîchissement des scores
@@ -3681,7 +3683,7 @@ function _confirmerMotFinalize(word, pIdx) {
     renderHistPanel();
   }
   renderHistPanel();
-  log(p.name + ' لعب «' + word + '» ← ' + (ev.score > 0 ? '+'+ev.score+' نقطة' : 'أُلغيت النقاط'), ev.valid ? 'ok' : 'bad');
+  log(p.name + ' لعب «' + disp(word) + '» ← ' + (ev.score > 0 ? '+'+ev.score+' نقطة' : 'أُلغيت النقاط'), ev.valid ? 'ok' : 'bad');
   if (p.letters.length === 0) { endGame(); return; }
   if (!_modeEnLigne) {
     if (ev.valid && ev.score > 0 && G.playedCaseIds && G.curCase) G.playedCaseIds.add(G.curCase.id);
