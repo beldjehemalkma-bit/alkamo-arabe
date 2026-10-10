@@ -2534,7 +2534,9 @@ let CASES = MAQUETTES[1].cases;
 
 // ─── Dictionnaire universel ───
 const DICO_LIBRE = new Set();
-fetch('dictionnaire.json')
+const DICO_LIBRE_N = new Set();   // mêmes mots, sous forme normalisée (recherche rapide)
+// Même principe que le jeu français : le fichier produit par le convertisseur (xlsx → dictionnaire_ar.json) alimente les mots libres
+fetch('dictionnaire_ar.json')
   .then(r => r.json())
   .then(data => {
     // Nouvelle structure : { M1: { THEME: [mots] }, M2: ... }
@@ -2549,6 +2551,7 @@ fetch('dictionnaire.json')
         });
       });
     }
+    DICO_LIBRE.forEach(m => DICO_LIBRE_N.add(norm(m)));
     console.log('Dico universel chargé:', DICO_LIBRE.size, 'mots');
   })
   .catch(e => console.warn('Dico universel non chargé:', e));
@@ -2608,15 +2611,9 @@ function inDico(w) {
   const n = norm(w);
   const wUpper = w.toUpperCase();
   // 1. Chercher exact dans DICO_LIBRE (avec ou sans accents)
-  if (DICO_LIBRE.has(wUpper)) return true;
-  if ([...DICO_LIBRE].some(m => norm(m) === n)) return true;
-  // 2. Recherche sans accents dans DICO_LIBRE + formes flexionnelles
+  if (DICO_LIBRE.has(wUpper) || DICO_LIBRE_N.has(n)) return true;
   const ns = n.endsWith('S') ? n.slice(0,-1) : n + 'S';
   const ne = n.endsWith('E') ? n.slice(0,-1) : n + 'E';
-  for (const m of DICO_LIBRE) {
-    const nm = norm(m);
-    if (nm === n || nm === ns || nm === ne) return true;
-  }
   // 3. Chercher dans tous les thèmes du DICT
   for (const theme of Object.values(DICT)) {
     if (theme.some(d => {
@@ -3604,7 +3601,7 @@ async function verifierWiktionnaire(mot) {
     // Si Wiktionnaire inaccessible → dernier recours, DICO_LIBRE
     const w = mot.toUpperCase();
     const nw = norm(mot);
-    return DICO_LIBRE.has(w) || [...DICO_LIBRE].some(m => norm(m) === nw);
+    return DICO_LIBRE.has(w) || DICO_LIBRE_N.has(nw);
   }
 }
 
@@ -3626,7 +3623,7 @@ function confirmerMot() {
     const wUp = word.toUpperCase();
     const nw = norm(word);
     const inLocal = DICO_LIBRE.has(wUp) ||
-      [...DICO_LIBRE].some(m => norm(m) === nw) ||
+      DICO_LIBRE_N.has(nw) ||
       Object.values(DICT).some(arr => arr.some(d => norm(d) === nw)) ||
       checkWordLocalHunspell(word) === true;
     if (inLocal) {
