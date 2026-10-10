@@ -1,0 +1,18 @@
+ALKAMO — Dictionnaire orthographique arabe (dico_ar.aff / dico_ar.dic)
+=======================================================================
+Ces deux fichiers sont le dictionnaire Hunspell arabe (Hunspell-ar) :
+
+  Auteur : Mohamed Kebdani (2006-2008), d'après le projet Ayaspell (http://ayaspell.sourceforge.net)
+  Source : https://github.com/LibreOffice/dictionaries/tree/master/ar
+  Licence : tri-licence GPL 2.0 / LGPL 2.1 / MPL 1.1 (au choix de l'utilisateur)
+
+Texte de la licence (extrait du fichier COPYING du projet) :
+
+  The contents of this software may be used under the terms of the GNU General Public
+  License Version 2 or later (the "GPL"), or the GNU Lesser General Public License
+  Version 2.1 or later (the "LGPL") the Mozilla Public License Version 1.1 or later (the "MPL").
+  Software distributed under these licenses is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND.
+
+Utilisation dans ALKAMO : vérification des mots libres (cases « كلمة حرة ») et onglet « القاموس العام ».
+
+قاموس الإملاء العربي (Hunspell-ar) — إعداد: محمد كبداني، استنادًا إلى مشروع «ياسبل» (Ayaspell).
