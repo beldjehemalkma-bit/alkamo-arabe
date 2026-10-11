@@ -4448,6 +4448,14 @@ function voirDefinitionJeu(motForme, btn) {
     a.textContent = 'عرض الصفحة كاملة في ويكاموس ↗';
     return a;
   }
+  function lienRecherche() {
+    var a = document.createElement('a');
+    a.href = 'https://www.google.com/search?q=' + encodeURIComponent('معنى كلمة ' + mot);
+    a.target = '_blank'; a.rel = 'noopener';
+    a.style.cssText = 'display:inline-block;margin-top:4px;margin-inline-start:10px;color:var(--gold-light);font-size:.78rem;font-weight:700';
+    a.textContent = 'ابحث عن معناها على الإنترنت ↗';
+    return a;
+  }
   function ligneUtile(l) {
     var t = l.trim();
     return t && !/^(=|\{\{|\[\[|\*|:|;|<|__|\||!|#)/.test(t);
@@ -4459,7 +4467,8 @@ function voirDefinitionJeu(motForme, btn) {
         return p && p.revisions && p.revisions[0];
       });
       if (!pages.length) {
-        zone.textContent = '— لا توجد صفحة لهذه الكلمة في ويكاموس بعد.';
+        zone.textContent = '— لا توجد صفحة لهذه الكلمة في ويكاموس بعد. ';
+        zone.appendChild(lienRecherche());
         btn.disabled = false; return;
       }
       pages.sort(function(a, b) { return titres.indexOf(a.title) - titres.indexOf(b.title); });
@@ -4495,7 +4504,7 @@ function voirDefinitionJeu(motForme, btn) {
       if (!defs.length) {
         var d0 = document.createElement('div');
         d0.textContent = '— توجد صفحة لهذه الكلمة، لكن دون تعريف مكتوب بعد.';
-        zone.appendChild(d0); zone.appendChild(lien(page.title));
+        zone.appendChild(d0); zone.appendChild(lien(page.title)); zone.appendChild(lienRecherche());
         btn.disabled = false; return;
       }
       defs.forEach(function(d) {
@@ -4508,7 +4517,8 @@ function voirDefinitionJeu(motForme, btn) {
       btn.style.display = 'none';
     })
     .catch(function() {
-      zone.textContent = '— التعريف غير متاح حاليًا (تحقّق من الاتصال بالإنترنت).';
+      zone.textContent = '— التعريف غير متاح حاليًا (تحقّق من الاتصال بالإنترنت). ';
+      zone.appendChild(lienRecherche());
       btn.disabled = false;
     });
 }
