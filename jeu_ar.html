@@ -3822,8 +3822,15 @@ function _confirmerMotFinalize(word, pIdx) {
 function quitterPartie() {
   // Ouvrir notre propre modal de confirmation
   const mfin = document.getElementById('m-fin');
-  if (mfin) mfin.classList.add('open');
+  if (mfin) { mfin.style.display = ''; mfin.classList.add('open'); }
 }
+
+// Bouton « إنهاء الجولة » du menu ☰ (défini ici, hors du module Firebase, pour être toujours disponible)
+function confirmerFinPartie() {
+  closeModal('m-menu');
+  quitterPartie();
+}
+window.confirmerFinPartie = confirmerFinPartie;
 
 function passerTour() {
   log(curP().name + ' تخطّى دوره', '');
@@ -5697,11 +5704,6 @@ function retourMaquette() {
 }
 
 
-function confirmerFinPartie() {
-  closeModal('m-menu');
-  const mfin = document.getElementById('m-fin');
-  if (mfin) mfin.classList.add('open');
-}
 
 function _executerFinPartie() {
   var mfin = document.getElementById('m-fin');
@@ -5860,7 +5862,7 @@ function _executerFinPartie() {
   <div class="modal">
     <h2 style="color:#e74c3c">إنهاء الجولة؟ 🏁</h2>
     <p style="color:rgba(255,255,255,.7);font-size:.9rem;text-align:center;margin:12px 0">
-      Voulez-vous vraiment terminer ?<br>Les scores seront affichés.
+      هل تريد فعلًا إنهاء الجولة؟<br>ستُعرض النتائج.
     </p>
     <div class="mbtns">
       <button class="btn btn-out" id="btn-fin-annuler">إلغاء</button>
