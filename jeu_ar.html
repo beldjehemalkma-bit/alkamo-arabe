@@ -2505,7 +2505,7 @@ const MAQUETTES = {
     ]
   },
   5: {
-    nom: "لوح الخبراء", emoji: "🎓",
+    nom: "اللوح رقم 5 · الخبير", emoji: "🎓",
     cases: [
       {id:'A1',th:'العمارة',emoji:'🏛'},     {id:'B1',th:'الفن',emoji:'🎨'},
       {id:'C1',th:'التاريخ',emoji:'📜'},          {id:'D1',th:'الفلك',emoji:'🔭'},
@@ -4626,7 +4626,7 @@ function renderMaquetteTabs() {
     card.className = 'maq-card-mini' + (n === _maqActive ? ' active' : '');
     card.innerHTML =
       '<div class="maq-card-mini-emoji">' + (m.emoji||'🎲') + '</div>' +
-      '<div class="maq-card-mini-nom">' + m.nom + '</div>' +
+      '<div class="maq-card-mini-nom">' + m.nom.replace(' · ', '<br>') + '</div>' +
       '<div class="maq-card-mini-themes">' + themes + '...</div>';
     card.onclick = function() {
       _maqActive = n;
