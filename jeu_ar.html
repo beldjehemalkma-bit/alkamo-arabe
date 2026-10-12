@@ -1042,11 +1042,11 @@ body.theme-gold .hist-panel { background:rgba(5,26,16,.6); border-left-color:rgb
     <div class="tuto-hl">يجب أن تنتمي الكلمة المُكوَّنة إلى <strong>الحقل المعجمي للموضوع</strong> المسحوب — أي أن تكون مرتبطة مباشرة بمجال أو عالم هذا الموضوع ليتم قبولها واحتسابها.</div>
     <div class="tuto-step"><div class="tuto-n">1</div><div class="tuto-c"><h3>التوزيع</h3><p>يحصل كل لاعب على <strong>10 أحرف</strong>. يُسحب موضوع تلقائيًا.</p></div></div>
     <div class="tuto-step"><div class="tuto-n">2</div><div class="tuto-c"><h3>تكوين كلمة</h3><p><strong>انقر</strong> على الأحرف أو <strong>اسحبها</strong> إلى منطقة تكوين الكلمة. لديك <strong>3 دقائق</strong>. يكفي <strong>حرفان</strong> لتكوين كلمة في خانات المواضيع.</p></div></div>
-    <div class="tuto-step"><div class="tuto-n">3</div><div class="tuto-c"><h3>الخانات الحرة C1/A3/C3/E3/C5</h3><p>كوّن أي كلمة — دون أي قيد على الموضوع! الحد الأدنى: <strong>4 أحرف</strong> في A3 وE3، و<strong>5</strong> في C3، و<strong>6</strong> في C1 وC5 (مع مكافأة +10).</p></div></div>
+    <div class="tuto-step"><div class="tuto-n">3</div><div class="tuto-c"><h3>الخانات الحرة C1/A3/C3/E3/C5</h3><p>كوّن أي كلمة — دون أي قيد على الموضوع! طول الكلمة محدد: <strong>7 إلى 9 أحرف</strong> في C1، و<strong>6</strong> في A3، و<strong>7</strong> في C3، و<strong>6 إلى 8</strong> في E3، و<strong>8</strong> في C5 (مع مكافأة +10 في C1 وC5).</p></div></div>
     <div class="tuto-free">✦ الخانات الحرة: أي كلمة من القاموس مقبولة!</div>
     <div class="tuto-step"><div class="tuto-n">4</div><div class="tuto-c"><h3>الجوكر ★</h3><p>تُفتح نافذة لاختيار الحرف الذي يمثله الجوكر.</p></div></div>
     <div class="tuto-step"><div class="tuto-n">5</div><div class="tuto-c"><h3>تغيير الأحرف</h3><p>انقر <strong>تفعيل التغيير</strong>، اختر الأحرف الحمراء، ثم <strong>تأكيد</strong>. فقط إذا لم ينتهِ الوقت!</p></div></div>
-    <div class="tuto-step"><div class="tuto-n">6</div><div class="tuto-c"><h3>النقاط</h3><p>مكافأة الطول: <strong>5 أحرف +5</strong> · <strong>6 أحرف +10</strong> · <strong>7 أحرف فأكثر +20</strong>. كلمة خارج الموضوع = <strong>إلغاء النقاط</strong>.</p></div></div>
+    <div class="tuto-step"><div class="tuto-n">6</div><div class="tuto-c"><h3>النقاط</h3><p>الخانتان C1 وC5: <strong>+10 نقاط</strong> مكافأة. كلمة خارج الموضوع = <strong>إلغاء النقاط</strong>.</p></div></div>
     <!-- Bonus Labourage -->
     <div class="tuto-bonus">
       <div class="tuto-bonus-icon">🌾</div>
@@ -2420,21 +2420,21 @@ const MAQUETTES = {
     nom: "اللوح رقم 1", emoji: "🎯",
     cases: [
       {id:'A1',th:'اللباس',emoji:'👗'},        {id:'B1',th:'الصيد',emoji:'🎣'},
-      {id:'C1',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
       {id:'D1',th:'اللغة',emoji:'💬'},           {id:'E1',th:'الثدييات',emoji:'🦁'},
       {id:'A2',th:'النقل',emoji:'🚗'},        {id:'B2',th:'الاقتصاد',emoji:'💰'},
       {id:'C2',th:'الرياضة',emoji:'⚽'},            {id:'D2',th:'الدين',emoji:'☪'},
       {id:'E2',th:'المدرسة',emoji:'🏫'},
-      {id:'A3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
       {id:'B3',th:'الأدوات والمهن',emoji:'🔧'},
-      {id:'C3',th:'MOT AU CHOIX',free:true,minL:5,emoji:'⭐'},
+      {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
       {id:'D3',th:'السياسة',emoji:'🏛'},
-      {id:'E3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
       {id:'A4',th:'الموسيقى',emoji:'🎵'},          {id:'B4',th:'المعادن',emoji:'💎'},
       {id:'C4',th:'القياس والأدوات',emoji:'📏'}, {id:'D4',th:'الحرف اليدوية',emoji:'🏺'},
       {id:'E4',th:'الفاكهة',emoji:'🍎'},
       {id:'A5',th:'الشجرة',emoji:'🌳'},            {id:'B5',th:'الطب',emoji:'⚕'},
-      {id:'C5',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
       {id:'D5',th:'البناء',emoji:'🏗'},         {id:'E5',th:'الفيزياء',emoji:'⚛'}
     ]
   },
@@ -2442,21 +2442,21 @@ const MAQUETTES = {
     nom: "اللوح رقم 2", emoji: "🌟",
     cases: [
       {id:'A1',th:'البحرية',emoji:'⚓'},           {id:'B1',th:'الكيمياء',emoji:'⚗'},
-      {id:'C1',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
       {id:'D1',th:'الخياطة',emoji:'✂'},           {id:'E1',th:'النحو',emoji:'📝'},
       {id:'A2',th:'الزهرة',emoji:'🌸'},            {id:'B2',th:'الصناعة',emoji:'🏭'},
       {id:'C2',th:'المهنة',emoji:'👷'},           {id:'D2',th:'الحيوان',emoji:'🐾'},
       {id:'E2',th:'الطبخ',emoji:'🍲'},
-      {id:'A3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
       {id:'B3',th:'المؤسسة',emoji:'🏛'},
-      {id:'C3',th:'MOT AU CHOIX',free:true,minL:5,emoji:'⭐'},
+      {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
       {id:'D3',th:'الأداة',emoji:'🔧'},
-      {id:'E3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
       {id:'A4',th:'التربية',emoji:'👨‍👩‍👧'},      {id:'B4',th:'اللعب',emoji:'♟'},
       {id:'C4',th:'الفن والموسيقى',emoji:'🎵'},   {id:'D4',th:'الفلك',emoji:'🌙'},
       {id:'E4',th:'الغذاء',emoji:'🥩'},
       {id:'A5',th:'علم النبات',emoji:'🌵'},        {id:'B5',th:'الطاقة',emoji:'⚡'},
-      {id:'C5',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
       {id:'D5',th:'القوة',emoji:'💪'},        {id:'E5',th:'التشريح',emoji:'🦴'}
     ]
   },
@@ -2464,21 +2464,21 @@ const MAQUETTES = {
     nom: "اللوح رقم 3", emoji: "🏆",
     cases: [
       {id:'A1',th:'اللعب والرياضة',emoji:'⚽'},     {id:'B1',th:'الوقت والطقس',emoji:'🌦'},
-      {id:'C1',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
       {id:'D1',th:'الإعلام الآلي',emoji:'💻'},     {id:'E1',th:'الرياضيات',emoji:'📐'},
       {id:'A2',th:'الفلاحة',emoji:'🌾'},      {id:'B2',th:'الفن',emoji:'🎨'},
       {id:'C2',th:'الملاحة',emoji:'⚓'},       {id:'D2',th:'الحيوان والنبات',emoji:'🌿'},
       {id:'E2',th:'الحرب',emoji:'⚔'},
-      {id:'A3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
       {id:'B3',th:'الإدارة',emoji:'🏢'},
-      {id:'C3',th:'MOT AU CHOIX',free:true,minL:5,emoji:'⭐'},
+      {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
       {id:'D3',th:'العائلة',emoji:'👨‍👩‍👧'},
-      {id:'E3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
       {id:'A4',th:'الفيزياء والكيمياء',emoji:'⚗'},{id:'B4',th:'الدول والعواصم',emoji:'🌍'},
       {id:'C4',th:'الطب والتشريح',emoji:'🏥'},{id:'D4',th:'التجارة',emoji:'🛒'},
       {id:'E4',th:'القانون والعدالة',emoji:'⚖'},
       {id:'A5',th:'الأدب',emoji:'📖'},      {id:'B5',th:'السياحة',emoji:'✈'},
-      {id:'C5',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
       {id:'D5',th:'التعمير',emoji:'🏘'},        {id:'E5',th:'البحر والمحيط',emoji:'🌊'}
     ]
   },
@@ -2486,21 +2486,21 @@ const MAQUETTES = {
     nom: "اللوح رقم 4", emoji: "💫",
     cases: [
       {id:'A1',th:'العاطفة',emoji:'💗'},        {id:'B1',th:'الفيزياء',emoji:'⚛'},
-      {id:'C1',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C1',th:'MOT AU CHOIX',free:true,minL:7,maxL:9,bonus:10,emoji:'⭐'},
       {id:'D1',th:'اللون',emoji:'🎨'},           {id:'E1',th:'فكرة ومفهوم',emoji:'💡'},
       {id:'A2',th:'الأساطير',emoji:'🍽'}, {id:'B2',th:'جسم الإنسان',emoji:'🫀'},
       {id:'C2',th:'الثقافة',emoji:'🎭'},           {id:'D2',th:'الآثار',emoji:'🏺'},
       {id:'E2',th:'الحشرات والزواحف',emoji:'🦎'},
-      {id:'A3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'A3',th:'MOT AU CHOIX',free:true,minL:6,maxL:6,emoji:'⭐'},
       {id:'B3',th:'التاريخ',emoji:'📜'},
-      {id:'C3',th:'MOT AU CHOIX',free:true,minL:5,emoji:'⭐'},
+      {id:'C3',th:'MOT AU CHOIX',free:true,minL:7,maxL:7,emoji:'⭐'},
       {id:'D3',th:'الأدب',emoji:'📚'},
-      {id:'E3',th:'MOT AU CHOIX',free:true,minL:4,emoji:'⭐'},
+      {id:'E3',th:'MOT AU CHOIX',free:true,minL:6,maxL:8,emoji:'⭐'},
       {id:'A4',th:'شخصية مشهورة',emoji:'⭐'},         {id:'B4',th:'الشجاعة',emoji:'🦁'},
       {id:'C4',th:'التكنولوجيا',emoji:'⚙'},        {id:'D4',th:'الطقس والمناخ',emoji:'🌦'},
       {id:'E4',th:'العمارة',emoji:'🏗'},
       {id:'A5',th:'الديكور',emoji:'🎀'},        {id:'B5',th:'الجبل والصحراء',emoji:'🏔'},
-      {id:'C5',th:'MOT AU CHOIX',free:true,minL:6,bonus:10,emoji:'⭐'},
+      {id:'C5',th:'MOT AU CHOIX',free:true,minL:8,maxL:8,bonus:10,emoji:'⭐'},
       {id:'D5',th:'السمك والبحر',emoji:'🐟'},    {id:'E5',th:'التسويق',emoji:'📢'}
     ]
   },
@@ -3573,10 +3573,6 @@ function buildWord() {
 function calcScore(word) {
   let s = 0;
   G.word.forEach(w => s += vL(w.letter));
-  const lenBonus = norm(word).length;
-  if (lenBonus >= 7) s += 20;
-  else if (lenBonus === 6) s += 10;
-  else if (lenBonus === 5) s += 5;
   if (G.curCase?.bonus) s += G.curCase.bonus;
   return s;
 }
