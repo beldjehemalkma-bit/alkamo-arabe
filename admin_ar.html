@@ -753,6 +753,41 @@ function buildDictionnairePDF(data) {
     });
   });
 
+  // ---------- المصادر والاعتمادات ----------
+  newPage(true);
+  var cy = MARGIN + 6, cr = PW - MARGIN;
+  font('bold', 18, GOLDLIGHT); T('المصادر والاعتمادات', PW / 2, cy, { align: 'center' }); cy += 12;
+  font('normal', 10.5, WHITE);
+  [
+    ['أُعدَّت المواضيع والمعاجم من قِبَل المؤلف', 0],
+    ['استنادًا إلى مصادر جرى الاطلاع عليها، ومنها', 0],
+    ['', 0],
+    ['المركز الوطني للموارد النصية والمعجمية', 1],
+    ['cnrtl.fr', 2],
+    ['ويكاموس الفرنسي', 1],
+    ['Wiktionnaire - CC BY-SA', 2],
+    ['Rimes Solides', 1],
+    ['Lexilogos', 1],
+    ['القاموس المرئي', 1],
+    ['Le Dictionnaire visuel', 2],
+    ['', 0],
+    ['يعتمد التدقيق الإملائي على قواميس', 0],
+    ['Hunspell', 1],
+    ['ومنها قاموس الإملاء العربي', 0],
+    ['Hunspell-ar', 1],
+    ['لمحمد كبداني، استنادًا إلى مشروع', 0],
+    ['Ayaspell', 1],
+    ['', 0],
+    ['الموسيقى', 0],
+    ['Pixabay - Pixabay License', 1],
+    ['Golden Dunes / Celestial Oud - djovan', 1],
+    ['', 0],
+    ['الصورة التوضيحية في شاشة استقبال اللعبة', 0],
+    ['مولَّدة بالذكاء الاصطناعي', 0],
+    ['', 0]
+  ].forEach(function (p) { if (p[0]) T(p[0], cr - p[1] * 6, cy, { align: 'right' }); cy += 6.5; });
+  font('bold', 11, GOLDLIGHT); T('جميع الحقوق محفوظة للعبة', cr, cy, { align: 'right' }); cy += 6.5; T('ALKAMO', cr, cy, { align: 'right' }); cy += 6.5; T('ومحتوياتها الأصلية', cr, cy, { align: 'right' });
+
   doc.save('ALKAMO_Dictionnaire_Lexical_Arabe.pdf');
 }
 
