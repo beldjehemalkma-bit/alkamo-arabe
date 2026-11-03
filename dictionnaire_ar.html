@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>قاموس ALKAMO — 105 موضوعاً</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -88,13 +88,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 5
 
 /* BARRE RECHERCHE */
 .search-wrap{max-width:600px;margin:0 auto 12px;position:relative}
-.search-input{width:100%;padding:14px 50px 14px 20px;border-radius:50px;
+.search-input{width:100%;padding:14px 20px 14px 110px;border-radius:50px;
   background:rgba(255,255,255,.07);border:1px solid rgba(200,160,32,.25);
-  color:#fff;font-size:1rem;font-family:'DM Sans',sans-serif;outline:none;
+  color:#fff;font-size:16px;font-family:'DM Sans',sans-serif;outline:none;
   transition:all .2s}
 .search-input:focus{border-color:var(--g);background:rgba(255,255,255,.1)}
 .search-input::placeholder{color:rgba(255,255,255,.35)}
-.search-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);
+.search-btn{position:absolute;left:6px;top:50%;transform:translateY(-50%);
   background:linear-gradient(135deg,var(--v),#2E2575);border:none;color:#fff;
   padding:8px 18px;border-radius:50px;cursor:pointer;font-size:.88rem;font-weight:600}
 .search-result{max-width:600px;margin:0 auto 20px;padding:12px 20px;border-radius:12px;
@@ -1620,7 +1620,8 @@ function toggleTheme(card) {
   card.classList.toggle('open');
 }
 
-function verifierMot() {
+function verifierMot(avecOuverture) {
+  if (avecOuverture === undefined || avecOuverture === null || typeof avecOuverture === 'object') avecOuverture = true;
   const val = document.getElementById('search-input').value.trim();
   if (!val) return;
   const w = norm(val);
@@ -1635,7 +1636,7 @@ function verifierMot() {
     res.className = 'search-result found-th';
     res.style.display = 'block';
     res.textContent = '✅ "' + val + '" — موجودة في موضوع: ' + themeTrouve;
-    highlightInTheme(w, themeTrouve);
+    if (avecOuverture) highlightInTheme(w, themeTrouve);
     return;
   }
 
@@ -1644,12 +1645,14 @@ function verifierMot() {
   res.textContent = '❌ "' + val + '" — غير موجودة في القاموس المعجمي';
 }
 
+var _tLive = null;
 function liveSearch(val) {
+  clearTimeout(_tLive);
   if (val.length < 2) {
     document.getElementById('search-result').style.display = 'none';
     return;
   }
-  if (val.length >= 2) verifierMot();
+  _tLive = setTimeout(function() { verifierMot(false); }, 500);
 }
 
 function highlightInTheme(w, theme) {
