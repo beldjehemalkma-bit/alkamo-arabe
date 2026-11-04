@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبّت ALKAMO على هاتفك</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#1E5C41">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--g:#C8A020;--gl:#FAD060;--gr:#1D9E75;--grl:#4DC99A;--v:#534AB7;--dk:#0A0818;--wh:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',system-ui,sans-serif;background:var(--dk);color:var(--wh);min-height:100vh;
+  background-image:radial-gradient(ellipse at top,#1b2a4a 0%,transparent 60%);overflow-x:hidden}
+main{max-width:520px;margin:0 auto;padding:28px 16px 48px;text-align:center}
+.logo{width:96px;height:96px;border-radius:22px;box-shadow:0 8px 28px rgba(0,0,0,.5);margin:0 auto 16px;display:block}
+h1{font-weight:800;font-size:1.7rem;line-height:1.35;color:var(--gl);margin-bottom:8px}
+.sub{color:rgba(255,255,255,.75);font-size:1.05rem;line-height:1.6;margin-bottom:22px}
+.sub b{color:var(--grl)}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.tab{flex:1;max-width:160px;padding:10px 8px;border-radius:50px;border:1px solid rgba(200,160,32,.35);
+  background:transparent;color:rgba(255,255,255,.75);font:700 .95rem 'Tajawal',sans-serif;cursor:pointer}
+.tab.on{background:linear-gradient(135deg,var(--gr),#157a5a);color:#fff;border-color:transparent}
+.panel{display:none}.panel.on{display:block}
+.step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;margin-bottom:14px;text-align:right}
+.step .n{display:inline-flex;width:32px;height:32px;border-radius:50%;background:var(--g);color:#1a1200;
+  font:800 1.05rem 'Tajawal',sans-serif;align-items:center;justify-content:center;margin-left:10px;flex:none}
+.step h2{display:flex;align-items:center;font-size:1.12rem;font-weight:700;margin-bottom:10px}
+.step p{color:rgba(255,255,255,.82);font-size:1rem;line-height:1.65;margin-bottom:10px}
+.step svg{display:block;width:100%;height:auto;border-radius:12px;direction:ltr}
+.hl{color:var(--gl);font-weight:700}
+.play{display:block;margin:22px auto 10px;padding:16px 28px;border-radius:50px;text-decoration:none;
+  background:linear-gradient(135deg,var(--v),#2E2575);color:#fff;font:800 1.15rem 'Tajawal',sans-serif;
+  border:1px solid rgba(127,119,221,.5);max-width:340px}
+.note{color:rgba(255,255,255,.6);font-size:.95rem;margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icons/icon-192.png" alt="ALKAMO">
+  <h1>ثبّت ALKAMO على هاتفك</h1>
+  <p class="sub">خطوتان فقط، <b>دون تحميل أي ملف</b> ودون أي تحذير. تفتح اللعبة بعدها بملء الشاشة كأي تطبيق حقيقي.</p>
+
+  <div class="tabs">
+    <button class="tab" id="t-android" onclick="show('android')">Android</button>
+    <button class="tab" id="t-iphone" onclick="show('iphone')">iPhone</button>
+    <button class="tab" id="t-pc" onclick="show('pc')">الكمبيوتر</button>
+  </div>
+
+  <section class="panel" id="p-android">
+    <div class="step">
+      <h2><span class="n">١</span>افتح قائمة المتصفح</h2>
+      <p>في <b>Chrome</b> اضغط على <span class="hl">النقاط الثلاث</span> في أعلى الشاشة.</p>
+      <svg viewBox="0 0 320 120" role="img" aria-label="النقاط الثلاث في Chrome">
+        <rect width="320" height="120" fill="#0f1830"/>
+        <rect x="0" y="0" width="320" height="52" fill="#1c2540"/>
+        <rect x="14" y="12" width="222" height="28" rx="14" fill="#2a3556"/>
+        <text x="30" y="31" fill="#cfd6ea" font-size="13" font-family="sans-serif">alkamo.fr</text>
+        <circle cx="270" cy="26" r="21" fill="none" stroke="#FAD060" stroke-width="3"/>
+        <circle cx="270" cy="17" r="3.4" fill="#fff"/><circle cx="270" cy="26" r="3.4" fill="#fff"/><circle cx="270" cy="35" r="3.4" fill="#fff"/>
+        <text x="160" y="96" fill="#FAD060" font-size="16" font-family="Tajawal,sans-serif" text-anchor="middle" font-weight="700">اضغط هنا ↑</text>
+      </svg>
+    </div>
+    <div class="step">
+      <h2><span class="n">٢</span>اختر «تثبيت التطبيق»</h2>
+      <p>من القائمة اضغط على <span class="hl">تثبيت التطبيق</span> (أو «إضافة إلى الشاشة الرئيسية»)، ثم اضغط على <span class="hl">تثبيت</span>.</p>
+      <svg viewBox="0 0 320 150" role="img" aria-label="قائمة تثبيت التطبيق">
+        <rect width="320" height="150" fill="#0f1830"/>
+        <rect x="70" y="8" width="240" height="134" rx="12" fill="#232d4d"/>
+        <text x="90" y="38" fill="#9aa6c7" font-size="14" font-family="Tajawal,sans-serif">علامة تبويب جديدة</text>
+        <rect x="76" y="52" width="228" height="38" rx="9" fill="none" stroke="#FAD060" stroke-width="3"/>
+        <text x="190" y="77" fill="#fff" font-size="15" font-family="Tajawal,sans-serif" font-weight="700" text-anchor="middle">تثبيت التطبيق</text>
+        <text x="90" y="118" fill="#9aa6c7" font-size="14" font-family="Tajawal,sans-serif">مشاركة…</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="panel" id="p-iphone">
+    <div class="step">
+      <h2><span class="n">١</span>افتح قائمة المشاركة</h2>
+      <p>في <b>Safari</b> اضغط على زر <span class="hl">المشاركة</span> (مربع بسهم إلى الأعلى) في أسفل الشاشة.</p>
+      <svg viewBox="0 0 320 110" role="img" aria-label="زر المشاركة في Safari">
+        <rect width="320" height="110" fill="#0f1830"/>
+        <rect x="0" y="58" width="320" height="52" fill="#1c2540"/>
+        <circle cx="160" cy="84" r="22" fill="none" stroke="#FAD060" stroke-width="3"/>
+        <rect x="150" y="80" width="20" height="16" rx="3" fill="none" stroke="#fff" stroke-width="2.4"/>
+        <path d="M160 88 V68 M153 74 L160 67 L167 74" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="160" y="36" fill="#FAD060" font-size="16" font-family="Tajawal,sans-serif" text-anchor="middle" font-weight="700">اضغط هنا ↓</text>
+      </svg>
+    </div>
+    <div class="step">
+      <h2><span class="n">٢</span>«إضافة إلى الشاشة الرئيسية»</h2>
+      <p>مرّر القائمة واضغط على <span class="hl">إضافة إلى الشاشة الرئيسية</span> ثم على <span class="hl">إضافة</span>.</p>
+      <svg viewBox="0 0 320 110" role="img" aria-label="إضافة إلى الشاشة الرئيسية">
+        <rect width="320" height="110" fill="#0f1830"/>
+        <rect x="30" y="14" width="260" height="42" rx="10" fill="none" stroke="#FAD060" stroke-width="3"/>
+        <text x="160" y="41" fill="#fff" font-size="15" font-family="Tajawal,sans-serif" font-weight="700" text-anchor="middle">＋  إضافة إلى الشاشة الرئيسية</text>
+        <text x="160" y="86" fill="#9aa6c7" font-size="14" font-family="Tajawal,sans-serif" text-anchor="middle">نسخ</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="panel" id="p-pc">
+    <div class="step">
+      <h2><span class="n">١</span>ابحث عن أيقونة التثبيت</h2>
+      <p>في <b>Chrome</b> أو <b>Edge</b> ستجد في شريط العنوان أيقونة صغيرة <span class="hl">«تثبيت»</span>. اضغط عليها ثم على <span class="hl">تثبيت</span>.</p>
+      <svg viewBox="0 0 320 90" role="img" aria-label="أيقونة التثبيت في شريط العنوان">
+        <rect width="320" height="90" fill="#0f1830"/>
+        <rect x="14" y="26" width="292" height="36" rx="18" fill="#2a3556"/>
+        <text x="34" y="49" fill="#cfd6ea" font-size="14" font-family="sans-serif">alkamo.fr</text>
+        <circle cx="272" cy="44" r="16" fill="none" stroke="#FAD060" stroke-width="3"/>
+        <path d="M272 36 V50 M266 45 L272 51 L278 45" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <a class="play" href="index_ar.html">🎮 افتح اللعبة</a>
+  <p class="note">هذا كل شيء! ستظهر أيقونة ALKAMO بالعربية على شاشتك الرئيسية.</p>
+</main>
+<script>
+function show(k){
+  ['android','iphone','pc'].forEach(function(x){
+    document.getElementById('p-'+x).classList.toggle('on',x===k);
+    document.getElementById('t-'+x).classList.toggle('on',x===k);
+  });
+}
+(function(){
+  var ua = navigator.userAgent || '';
+  show(/iPhone|iPad|iPod/i.test(ua) ? 'iphone' : (/Android/i.test(ua) ? 'android' : 'pc'));
+})();
+</script>
+</body>
+</html>
