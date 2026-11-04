@@ -146,10 +146,11 @@ function show(k){
   var app=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   if(app){ btn.style.display='none'; ok.style.display='block'; return; }
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; });
-  window.addEventListener('appinstalled',function(){ btn.style.display='none'; help.style.display='none'; ok.style.display='block'; });
+  function done(){ btn.style.display='none'; help.style.display='none'; ok.style.display='block'; }
+  window.addEventListener('appinstalled',done);
   btn.addEventListener('click',function(){
     if(ev){ ev.prompt();
-      ev.userChoice.then(function(c){ if(c&&c.outcome==='accepted'){btn.style.display='none';help.style.display='none';ok.style.display='block';} ev=null; }).catch(function(){});
+      ev.userChoice.then(function(c){ if(c&&c.outcome==='accepted'){btn.style.display='none';help.textContent='⏳ جارٍ التثبيت… انتظر لحظات ولا تغلق الصفحة';help.style.display='block';setTimeout(done,45000);} ev=null; }).catch(function(){});
       return; }
     var ios=/iPhone|iPad|iPod/i.test(ua), fb=/FBAN|FBAV|Instagram/i.test(ua), and=/Android/i.test(ua), msg;
     if(fb) msg='افتح هذا الرابط في Chrome (القائمة ⋮ ثم «فتح في المتصفح») ثم اضغط من جديد.';
