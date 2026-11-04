@@ -684,7 +684,7 @@ function toggleMobileMenu() {
     <a href="jeu_ar.html" class="btn-play" onclick="return checkAuth(event)">🎮 العب الآن</a>
     <a href="dictionnaire_ar.html" class="btn-rules" style="border-color:rgba(200,160,32,.3);color:var(--gl)">📚 القاموس</a>
     <a href="#decouvrir-alkamo" class="btn-rules" style="border-color:rgba(200,160,32,.3);color:var(--gl)" onclick="dcvPlayAudio()">🎓 اكتشف ALKAMO</a>
-    <a href="installer_ar.html" class="btn-rules" style="border-color:rgba(77,201,154,.5);color:var(--grl)">📲 ثبّت التطبيق</a>
+    <a href="installer_ar.html" id="btn-inst-home" class="btn-rules" style="border-color:rgba(77,201,154,.5);color:var(--grl)">📲 ثبّت التطبيق</a>
   </div>
 
   <div class="hero-stats">
@@ -1385,6 +1385,7 @@ function dcvBuildCarousel() {
 </script>
 <!-- ===== Bannière d'installation (ALKAMO عربي) ===== -->
 <style>
+@media (display-mode: standalone),(display-mode: fullscreen),(display-mode: minimal-ui){#btn-inst-home,#inst-bn{display:none!important}}
 #inst-bn{position:fixed;left:50%;bottom:14px;transform:translate(-50%,160%);width:calc(100% - 24px);max-width:440px;
   z-index:9999;direction:rtl;font-family:'Tajawal','DM Sans',sans-serif;
   background:linear-gradient(135deg,#0C2A1D,#1E5C41);border:1.5px solid #C8A020;border-radius:18px;
@@ -1419,7 +1420,8 @@ function dcvBuildCarousel() {
   function lsGet(){try{return localStorage.getItem(KEY)}catch(e){return null}}
   function lsSet(){try{localStorage.setItem(KEY,String(Date.now()))}catch(e){}}
   var standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-  if(standalone) return;
+  if(!standalone&&String(document.referrer).indexOf('android-app://')===0) standalone=true;
+  if(standalone){var hb=document.getElementById('btn-inst-home');if(hb)hb.style.display='none';return;}
   var d=parseInt(lsGet(),10);
   if(d&&Date.now()-d<DAYS*864e5) return;
   var ev=null, shown=false;
