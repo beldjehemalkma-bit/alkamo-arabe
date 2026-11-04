@@ -35,9 +35,11 @@ h1{font-weight:800;font-size:1.7rem;line-height:1.35;color:var(--gl);margin-bott
   background:linear-gradient(135deg,var(--v),#2E2575);color:#fff;font:800 1.15rem 'Tajawal',sans-serif;
   border:1px solid rgba(127,119,221,.5);max-width:340px}
 .note{color:rgba(255,255,255,.6);font-size:.95rem;margin-top:8px}
-#do-inst{display:none;margin:0 auto 22px;padding:16px 30px;border:0;border-radius:50px;cursor:pointer;
+#do-inst{display:block;margin:0 auto 22px;padding:16px 30px;border:0;border-radius:50px;cursor:pointer;
   background:linear-gradient(135deg,#FAD060,#C8A020);color:#1a1200;font:800 1.25rem 'Tajawal',sans-serif;
   box-shadow:0 6px 22px rgba(200,160,32,.35);max-width:340px;width:100%}
+#inst-help{display:none;margin:-8px auto 20px;max-width:340px;color:var(--gl);font-weight:700;font-size:1.02rem;line-height:1.6}
+.flash{animation:fl 1s ease 2}@keyframes fl{50%{box-shadow:0 0 0 4px #FAD060}}
 #inst-ok{display:none;margin:0 auto 22px;color:var(--grl);font-weight:800;font-size:1.1rem}
 </style>
 </head>
@@ -48,6 +50,7 @@ h1{font-weight:800;font-size:1.7rem;line-height:1.35;color:var(--gl);margin-bott
   <p class="sub">خطوتان فقط، <b>دون تحميل أي ملف</b> ودون أي تحذير. تفتح اللعبة بعدها بملء الشاشة كأي تطبيق حقيقي.</p>
 
   <button id="do-inst" type="button">📲 ثبّت الآن</button>
+  <p id="inst-help"></p>
   <p id="inst-ok">✅ التطبيق مثبّت على هاتفك</p>
 
   <div class="tabs">
@@ -138,14 +141,24 @@ function show(k){
   show(/iPhone|iPad|iPod/i.test(ua) ? 'iphone' : (/Android/i.test(ua) ? 'android' : 'pc'));
 })();
 (function(){
-  var btn=document.getElementById('do-inst'), ok=document.getElementById('inst-ok'), ev=null;
+  var btn=document.getElementById('do-inst'), ok=document.getElementById('inst-ok'), help=document.getElementById('inst-help'), ev=null;
+  var ua=navigator.userAgent||'';
   var app=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-  if(app){ ok.style.display='block'; return; }
-  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; btn.style.display='block'; });
-  window.addEventListener('appinstalled',function(){ btn.style.display='none'; ok.style.display='block'; });
+  if(app){ btn.style.display='none'; ok.style.display='block'; return; }
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; });
+  window.addEventListener('appinstalled',function(){ btn.style.display='none'; help.style.display='none'; ok.style.display='block'; });
   btn.addEventListener('click',function(){
-    if(!ev) return; ev.prompt();
-    ev.userChoice.then(function(c){ if(c&&c.outcome==='accepted'){btn.style.display='none';ok.style.display='block';} ev=null; }).catch(function(){});
+    if(ev){ ev.prompt();
+      ev.userChoice.then(function(c){ if(c&&c.outcome==='accepted'){btn.style.display='none';help.style.display='none';ok.style.display='block';} ev=null; }).catch(function(){});
+      return; }
+    var ios=/iPhone|iPad|iPod/i.test(ua), fb=/FBAN|FBAV|Instagram/i.test(ua), and=/Android/i.test(ua), msg;
+    if(fb) msg='افتح هذا الرابط في Chrome (القائمة ⋮ ثم «فتح في المتصفح») ثم اضغط من جديد.';
+    else if(ios) msg='في Safari: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية» (الشرح أدناه).';
+    else if(and) msg='اضغط على النقاط الثلاث ⋮ في Chrome ثم «تثبيت التطبيق» (الشرح أدناه).';
+    else msg='اضغط على أيقونة التثبيت الصغيرة في أقصى يمين شريط العنوان (الشرح أدناه).';
+    help.textContent=msg; help.style.display='block';
+    var t=document.querySelector('.tabs'); if(t&&t.scrollIntoView) t.scrollIntoView({behavior:'smooth',block:'start'});
+    var st=document.querySelector('.panel.on .step'); if(st){st.classList.remove('flash'); void st.offsetWidth; st.classList.add('flash');}
   });
 })();
 </script>
