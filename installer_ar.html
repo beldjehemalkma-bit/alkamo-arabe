@@ -35,6 +35,10 @@ h1{font-weight:800;font-size:1.7rem;line-height:1.35;color:var(--gl);margin-bott
   background:linear-gradient(135deg,var(--v),#2E2575);color:#fff;font:800 1.15rem 'Tajawal',sans-serif;
   border:1px solid rgba(127,119,221,.5);max-width:340px}
 .note{color:rgba(255,255,255,.6);font-size:.95rem;margin-top:8px}
+#do-inst{display:none;margin:0 auto 22px;padding:16px 30px;border:0;border-radius:50px;cursor:pointer;
+  background:linear-gradient(135deg,#FAD060,#C8A020);color:#1a1200;font:800 1.25rem 'Tajawal',sans-serif;
+  box-shadow:0 6px 22px rgba(200,160,32,.35);max-width:340px;width:100%}
+#inst-ok{display:none;margin:0 auto 22px;color:var(--grl);font-weight:800;font-size:1.1rem}
 </style>
 </head>
 <body>
@@ -42,6 +46,9 @@ h1{font-weight:800;font-size:1.7rem;line-height:1.35;color:var(--gl);margin-bott
   <img class="logo" src="icons/icon-192.png" alt="ALKAMO">
   <h1>ثبّت ALKAMO على هاتفك</h1>
   <p class="sub">خطوتان فقط، <b>دون تحميل أي ملف</b> ودون أي تحذير. تفتح اللعبة بعدها بملء الشاشة كأي تطبيق حقيقي.</p>
+
+  <button id="do-inst" type="button">📲 ثبّت الآن</button>
+  <p id="inst-ok">✅ التطبيق مثبّت على هاتفك</p>
 
   <div class="tabs">
     <button class="tab" id="t-android" onclick="show('android')">Android</button>
@@ -129,6 +136,17 @@ function show(k){
 (function(){
   var ua = navigator.userAgent || '';
   show(/iPhone|iPad|iPod/i.test(ua) ? 'iphone' : (/Android/i.test(ua) ? 'android' : 'pc'));
+})();
+(function(){
+  var btn=document.getElementById('do-inst'), ok=document.getElementById('inst-ok'), ev=null;
+  var app=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+  if(app){ ok.style.display='block'; return; }
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); ev=e; btn.style.display='block'; });
+  window.addEventListener('appinstalled',function(){ btn.style.display='none'; ok.style.display='block'; });
+  btn.addEventListener('click',function(){
+    if(!ev) return; ev.prompt();
+    ev.userChoice.then(function(c){ if(c&&c.outcome==='accepted'){btn.style.display='none';ok.style.display='block';} ev=null; }).catch(function(){});
+  });
 })();
 </script>
 </body>
