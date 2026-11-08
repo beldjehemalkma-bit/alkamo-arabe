@@ -213,6 +213,7 @@ nav {
       <div class="tab" onclick="showTab('doublons')">🔍 التكرارات</div>
       <div class="tab" onclick="showTab('qualite')">✅ مراقبة الجودة</div>
       <div class="tab" onclick="showTab('parametres')">⚙️ الإعدادات</div>
+      <div class="tab" onclick="showTab('visiteurs')">👥 الزوّار</div>
     </div>
 
     <!-- TAB STATS -->
@@ -264,6 +265,26 @@ nav {
         <div class="card-title">🔍 كلمات موجودة في عدة مواضيع</div>
         <div id="doublons-loading" class="loading">⏳ جارٍ التحليل...</div>
         <div id="doublons-content" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- TAB VISITEURS -->
+    <div id="tab-visiteurs" class="tab-content">
+      <div class="stats-grid" id="vis-stats">
+        <div class="stat-box"><div class="stat-n" id="vis-total">–</div><div class="stat-l">الزيارات</div></div>
+        <div class="stat-box"><div class="stat-n" id="vis-jour">–</div><div class="stat-l">اليوم</div></div>
+        <div class="stat-box"><div class="stat-n" id="vis-app">–</div><div class="stat-l">فتح التطبيق</div></div>
+        <div class="stat-box"><div class="stat-n" id="vis-inst">–</div><div class="stat-l">التثبيتات</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 آخر الزيارات</div>
+        <button class="btn btn-gold btn-sm" onclick="chargerVisiteurs()" style="margin-bottom:14px">🔄 تحديث</button>
+        <div id="vis-msg" class="loading">⏳ جارٍ التحميل...</div>
+        <div style="overflow-x:auto"><table class="theme-table" id="vis-table" style="display:none">
+          <thead><tr><th style="text-align:right">التاريخ والساعة</th><th style="text-align:right">النسخة</th><th style="text-align:right">البلد</th><th style="text-align:right">المدينة (تقريبية)</th><th style="text-align:right">الوضع</th><th style="text-align:right">الجهاز</th></tr></thead>
+          <tbody id="vis-body"></tbody>
+        </table></div>
+        <p style="margin-top:14px;font-size:.75rem;color:var(--muted)">آخر 300 زيارة. لا يُسجَّل عنوان IP أبدًا. زياراتك أنت لا تُحسب.</p>
       </div>
     </div>
 
@@ -357,9 +378,46 @@ function changerPwd() {
 function showTab(name) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  const tabs = ['stats','convertisseur','doublons','qualite','parametres'];
+  const tabs = ['stats','convertisseur','doublons','qualite','parametres','visiteurs'];
+  if (name === 'visiteurs') chargerVisiteurs();
   document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// VISITEURS (lecture Firebase en REST)
+// ═══════════════════════════════════════════
+const DB_URL = 'https://alkamo-3c76e-default-rtdb.firebaseio.com';
+try { localStorage.setItem('alk_no_count', '1'); } catch (e) {}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+async function chargerVisiteurs() {
+  const msg = document.getElementById('vis-msg');
+  msg.style.display = 'block'; msg.textContent = '⏳ جارٍ التحميل...';
+  try {
+    const [r1, r2, r3] = await Promise.all([
+      fetch(DB_URL + '/visites.json?orderBy="$key"&limitToLast=300'),
+      fetch(DB_URL + '/visites.json?shallow=true'),
+      fetch(DB_URL + '/installations.json?shallow=true')
+    ]);
+    if (!r1.ok) throw new Error(r1.status);
+    const data = (await r1.json()) || {};
+    const total = Object.keys((await r2.json()) || {}).length;
+    const inst = Object.keys((await r3.json()) || {}).length;
+    const rows = Object.values(data).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    const j0 = new Date(); j0.setHours(0, 0, 0, 0);
+    document.getElementById('vis-total').textContent = total;
+    document.getElementById('vis-jour').textContent = rows.filter(v => v.ts >= j0.getTime()).length;
+    document.getElementById('vis-app').textContent = rows.filter(v => v.mode === 'app').length;
+    document.getElementById('vis-inst').textContent = inst;
+    document.getElementById('vis-body').innerHTML = rows.map(v =>
+      '<tr><td style="direction:ltr;text-align:right">' + (v.ts ? new Date(v.ts).toLocaleString('fr-FR') : '') + '</td><td>' + (v.lang === 'ar' ? 'العربية' : 'الفرنسية') +
+      '</td><td>' + esc(v.pays) + '</td><td>' + esc(v.ville) + '</td><td>' + (v.mode === 'app' ? 'تطبيق' : 'موقع') +
+      '</td><td>' + (v.appareil === 'mobile' ? 'هاتف' : 'حاسوب') + '</td></tr>').join('');
+    document.getElementById('vis-table').style.display = rows.length ? 'table' : 'none';
+    if (rows.length) { msg.style.display = 'none'; } else { msg.textContent = 'لا توجد زيارات مسجَّلة بعد.'; msg.style.display = 'block'; }
+  } catch (e) {
+    msg.textContent = '❌ تعذّرت القراءة (' + e.message + '). تحقّق من قواعد Firebase.';
+  }
 }
 
 // ═══════════════════════════════════════════
