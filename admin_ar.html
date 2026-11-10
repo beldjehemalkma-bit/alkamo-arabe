@@ -271,11 +271,25 @@ nav {
     <!-- TAB VISITEURS -->
     <div id="tab-visiteurs" class="tab-content">
       <style>
-        #tab-visiteurs .theme-table{font-size:1.1rem}
-        #tab-visiteurs .theme-table th{font-size:.95rem;text-transform:none;color:#c9c6dc}
-        #tab-visiteurs .theme-table td{padding:12px 14px}
-        #tab-visiteurs .stat-l{font-size:.95rem;text-transform:none}
-        #tab-visiteurs .card p{font-size:.9rem !important}
+        .container:has(#tab-visiteurs.active){max-width:1500px}
+        #tab-visiteurs .theme-table{font-size:1.3rem;font-weight:700;color:#fff}
+        #tab-visiteurs .theme-table th{font-size:1.1rem;font-weight:800;text-transform:none;color:#e8e6f5;padding:14px 18px}
+        #tab-visiteurs .theme-table td{padding:14px 18px}
+        #tab-visiteurs .stat-l{font-size:1.15rem;font-weight:700;text-transform:none}
+        #tab-visiteurs .stat-n{font-size:2.4rem}
+        #tab-visiteurs .card-title{font-size:1.3rem}
+        #tab-visiteurs .card p{font-size:1.05rem !important;font-weight:600}
+        @media(max-width:700px){
+          .tabs{flex-wrap:wrap}
+          .tab{padding:10px 12px}
+          .container:has(#tab-visiteurs.active){padding:20px 10px}
+          #tab-visiteurs .stats-grid{grid-template-columns:1fr 1fr}
+          #tab-visiteurs .theme-table thead{display:none}
+          #tab-visiteurs .theme-table,#tab-visiteurs .theme-table tbody,#tab-visiteurs .theme-table tr,#tab-visiteurs .theme-table td{display:block;width:100%}
+          #tab-visiteurs .theme-table tr{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:8px 4px;background:rgba(255,255,255,.04)}
+          #tab-visiteurs .theme-table td{display:flex;justify-content:space-between;gap:12px;font-size:1.25rem;padding:8px 12px;border:0;text-align:right}
+          #tab-visiteurs .theme-table td::before{content:attr(data-l);color:#f0c75e;font-weight:800;font-size:1.1rem}
+        }
       </style>
       <div class="stats-grid" id="vis-stats">
         <div class="stat-box"><div class="stat-n" id="vis-total">–</div><div class="stat-l">الزيارات</div></div>
@@ -420,6 +434,8 @@ async function chargerVisiteurs() {
       '<tr><td style="direction:ltr;text-align:right">' + (v.ts ? new Date(v.ts).toLocaleString('fr-FR') : '') + '</td><td>' + (v.lang === 'ar' ? 'العربية' : 'الفرنسية') +
       '</td><td>' + esc(v.pays) + '</td><td>' + esc(v.ville) + '</td><td>' + (v.mode === 'app' ? 'تطبيق' : 'موقع') +
       '</td><td>' + (v.appareil === 'mobile' ? 'هاتف' : 'حاسوب') + '</td></tr>').join('');
+    var _ths=[].map.call(document.querySelectorAll('#vis-table thead th'),function(t){return t.textContent;});
+    document.querySelectorAll('#vis-body tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){td.setAttribute('data-l',_ths[i]||'');});});
     document.getElementById('vis-table').style.display = rows.length ? 'table' : 'none';
     if (rows.length) { msg.style.display = 'none'; } else { msg.textContent = 'لا توجد زيارات مسجَّلة بعد.'; msg.style.display = 'block'; }
   } catch (e) {
