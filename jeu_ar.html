@@ -5554,7 +5554,7 @@ function traiterActionDistante(action) {
     log(action.nom + ' استبدل أحرفه', '');
   } else if (action.type === 'fin_partie') {
     // Afficher un message bien visible
-    const msg = '🏁 ' + action.nom + ' a mis fin à la partie !';
+    const msg = '🏁 ' + action.nom + ' أنهى اللعبة !';
     log(msg, 'inf');
     if (typeof showToast === 'function') showToast(msg);
     // Afficher une alerte dans le jeu
@@ -5950,7 +5950,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     if (window.stopTimer) window.stopTimer();
     const notif = document.createElement('div');
     notif.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#C0392B,#8E44AD);color:#fff;padding:28px 40px;border-radius:20px;font-size:1.2rem;font-weight:900;z-index:9999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.7);min-width:280px;line-height:1.6;';
-    notif.innerHTML = '🏁<br><strong>' + nom + '</strong><br>a mis fin à la partie !';
+    notif.innerHTML = '🏁<br><strong>' + nom + '</strong><br>أنهى اللعبة !';
     document.body.appendChild(notif);
     setTimeout(() => {
       notif.remove();
@@ -6025,7 +6025,7 @@ function ajouterMsgTexteLocal(who, texte, moi) {
       if (typeof stopBgMusic === 'function') stopBgMusic();
       const notif = document.createElement('div');
       notif.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1D9E75,#534AB7);color:#fff;padding:24px 36px;border-radius:18px;font-size:1.2rem;font-weight:900;z-index:9999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:280px;';
-      notif.innerHTML = '🏁 ' + d.par + '<br>a mis fin à la partie !';
+      notif.innerHTML = '🏁 ' + d.par + '<br>أنهى اللعبة !';
       document.body.appendChild(notif);
       setTimeout(() => {
         notif.remove();
