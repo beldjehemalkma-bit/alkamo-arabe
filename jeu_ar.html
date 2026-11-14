@@ -1121,6 +1121,18 @@ body:has(#s-home.active) .bouclier-corner { display:none; }
   </div>
 </div>
 
+<!-- Modal اقتراح كلمة للقاموس -->
+<div class="ov" id="m-propose">
+  <div class="modal">
+    <h2>💡 كلمة غير معترف بها</h2>
+    <p id="prop-msg"></p>
+    <div class="mbtns" id="prop-btns">
+      <button class="btn btn-out" onclick="closeModal('m-propose')">إغلاق</button>
+      <button class="btn btn-p" onclick="envoyerPropositionMot()">اقتراح هذه الكلمة للقاموس</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Joker -->
 <div class="ov" id="m-joker">
   <div class="modal">
@@ -5972,6 +5984,24 @@ function ajouterMsgTexteLocal(who, texte, moi) {
     });
   };
 
+  // ══ اقتراحات الكلمات للقاموس (يقرؤها المشرف فقط) ══
+  window.proposerMotDico = async function(mot, theme, type, fr) {
+    try {
+      const u = auth.currentUser;
+      if (!u) return false;
+      const K = t => String(t||'').replace(/[\u064B-\u0652\u0670]/g,'').replace(/[.$#\[\]\/\s]/g,'_');
+      const cle = K(mot) + '__' + K(theme);
+      const pseudo = String(u.email || 'joueur').split('@')[0].slice(0, 30).replace(/[<>]/g, '');
+      const base = 'propositions/' + cle;
+      const maj = {};
+      maj[base + '/mot'] = String(mot).slice(0, 40);
+      maj[base + '/theme'] = String(theme).slice(0, 80);
+      maj[base + '/votes/' + u.uid] = { type: type === 'deux' ? 'deux' : 'un', pseudo, ts: Date.now(), fr: fr === true };
+      await update(ref(db), maj);
+      return true;
+    } catch (e) { console.warn('proposition non envoyée', e); return false; }
+  };
+
   window.ecouterDefis = function(code) {
     onValue(ref(db, 'parties/' + code + '/defis'), snap => {
       const defis = snap.val();
@@ -6309,8 +6339,10 @@ function ouvrirDefi(word, pIdx) {
   if (adversaire && adversaire.isBot) {
     snd('err');
     log('❌ «' + word + '» غير معروفة — الحاسوب يرفضها.', 'bad');
+    const _thBot = G.curCase && G.curCase.th;
     G.word = []; G.changeSel = []; G.changeMode = false;
     renderAll();
+    proposerApresRefus(word, _thBot);
     return;
   }
   const nomAdv = adversaire ? adversaire.name : "الخصم";
@@ -6320,6 +6352,46 @@ function ouvrirDefi(word, pIdx) {
     '<span style="color:rgba(255,255,255,.8)">' + nomAdv + '، هل تقبل هذه الكلمة؟</span>';
   snd('err');
   openModal('m-defi');
+}
+
+// ══ اقتراح كلمة للقاموس (يراجعها المشرف ويقرّر) ══
+G._nbPropositions = 0;
+function _motExisteEnArabe(word) {
+  try {
+    if (DICO_LIBRE.has(String(word).toUpperCase()) || DICO_LIBRE_N.has(norm(word))) return true;
+    return checkWordLocalHunspell(word) === true;
+  } catch (e) { return false; }
+}
+
+// كلمة قبلها الخصم : بطاقة « قبلها اللاعبان »
+function fichePropositionDeux(word, theme) {
+  if (!theme || !window.proposerMotDico) return;
+  window.proposerMotDico(word, theme, 'deux', _motExisteEnArabe(word));
+}
+
+// كلمة مرفوضة : يظهر الزر فقط إذا كانت الكلمة موجودة في العربية
+function proposerApresRefus(word, theme) {
+  if (!theme || !window.proposerMotDico) return;
+  if (G._nbPropositions >= 3) return;
+  if (!_motExisteEnArabe(word)) return;
+  G._propMot = word; G._propTheme = theme;
+  document.getElementById('prop-btns').style.display = '';
+  document.getElementById('prop-msg').innerHTML =
+    '<strong style="color:var(--gold-light)">«' + disp(word) + '»</strong> لم تُقبل في موضوع «' + theme + '».<br><br>' +
+    '<span style="color:rgba(255,255,255,.8)">هل ترى أنها كلمة عربية صحيحة؟ اقترحها: إن كانت تنتمي إلى الحقل المعجمي للموضوع فقد تنضمّ إلى القاموس.</span>';
+  openModal('m-propose');
+}
+
+function envoyerPropositionMot() {
+  const w = G._propMot, t = G._propTheme;
+  window.proposerMotDico(w, t, 'un', true).then(ok => {
+    document.getElementById('prop-btns').style.display = 'none';
+    document.getElementById('prop-msg').innerHTML = ok
+      ? '✓ شكرًا! سيتم فحص اقتراحك.'
+      : 'تعذّر إرسال الاقتراح (يلزم اتصال بالإنترنت وحساب).';
+    if (ok) G._nbPropositions++;
+    setTimeout(() => closeModal('m-propose'), 1600);
+  });
 }
 
 // Affiche la fenêtre de défi CHEZ L'ADVERSAIRE (mot proposé par l'autre joueur en ligne)
@@ -6367,6 +6439,9 @@ function traiterReponseDefi(accepte) {
   const pIdx = G._defiPIdx !== undefined ? G._defiPIdx : 0;
   const p = G.players && G.players[pIdx];
   if (!p) return;
+  const _thDefi = G.curCase && !G.curCase.free ? G.curCase.th : null;
+  if (accepte) fichePropositionDeux(word, _thDefi);
+  else proposerApresRefus(word, _thDefi);
 
   let score = 0;
   if (accepte) {

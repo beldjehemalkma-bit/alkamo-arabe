@@ -19,7 +19,7 @@ var AMIRI_B_B64='AAEAAAAPAIAAAwBwR0RFRpTxqXkAA4EAAAACVkdQT1PyY6w+AAODWAAAnIBHU1V
   --dark: #1a1a2e;
   --darker: #0f0f1e;
   --text: #e8e8f0;
-  --muted: rgba(255,255,255,0.45);
+  --muted: rgba(255,255,255,0.78);
   --card: rgba(255,255,255,0.05);
   --border: rgba(255,255,255,0.1);
   --red: #e74c3c;
@@ -217,6 +217,7 @@ nav {
       <div class="tab" onclick="showTab('qualite')">✅ مراقبة الجودة</div>
       <div class="tab" onclick="showTab('parametres')">⚙️ الإعدادات</div>
       <div class="tab" onclick="showTab('visiteurs')">👥 الزوّار</div>
+      <div class="tab" onclick="showTab('propositions')">💡 الاقتراحات</div>
     </div>
 
     <!-- TAB STATS -->
@@ -312,6 +313,38 @@ nav {
       </div>
     </div>
 
+    <!-- TAB PROPOSITIONS -->
+    <div id="tab-propositions" class="tab-content">
+      <style>
+        #tab-propositions .theme-table td, #tab-propositions .theme-table th { text-align: right; }
+        @media(max-width:700px){
+          .container:has(#tab-propositions.active){padding:20px 10px}
+          #tab-propositions .theme-table,#tab-propositions .theme-table *{box-sizing:border-box}
+          #tab-propositions .theme-table thead{display:none}
+          #tab-propositions .theme-table,#tab-propositions .theme-table tbody,#tab-propositions .theme-table tr,#tab-propositions .theme-table td{display:block;width:100%}
+          #tab-propositions .theme-table tr{border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:8px 4px;background:rgba(255,255,255,.04)}
+          #tab-propositions .theme-table td{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:1.1rem;padding:8px 12px;border:0}
+          #tab-propositions .theme-table td::before{content:attr(data-l);color:#f0c75e;font-weight:800;font-size:1rem}
+        }
+      </style>
+      <div class="card">
+        <div class="card-title">💡 كلمات اقترحها اللاعبون</div>
+        <p style="font-size:.95rem;color:rgba(255,255,255,.8);margin-bottom:12px">كلمة في كل سطر، من الأكثر جدّية إلى الأقل. زر «مقبولة» لا يعدّل القاموس: تُضاف الكلمة إلى قائمة تنسخها إلى ملف Excel الخاص بك.</p>
+        <button class="btn btn-gold btn-sm" onclick="chargerPropositions()" style="margin-bottom:14px">🔄 تحديث</button>
+        <div id="prop-msg-a" class="loading">⏳ جارٍ التحميل...</div>
+        <div style="overflow-x:auto"><table class="theme-table" id="prop-table" style="display:none">
+          <thead><tr><th>الكلمة</th><th>الموضوع</th><th>اتفاق اللاعبَين</th><th>اللاعبون</th><th>عربية</th><th>القاموس</th><th>القرار</th></tr></thead>
+          <tbody id="prop-body"></tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 الكلمات المقبولة — لإضافتها إلى Excel</div>
+        <pre id="prop-retenus" style="white-space:pre-wrap;font-size:1.05rem;color:#fff;margin-bottom:10px;font-family:inherit">لا توجد كلمات مقبولة.</pre>
+        <button class="btn btn-gold btn-sm" id="prop-copier" onclick="copierRetenus()">📋 نسخ القائمة</button>
+        <button class="btn btn-sm" onclick="viderRetenus()" style="margin-right:8px">✔ أُضيفت إلى Excel : أفرغ القائمة</button>
+      </div>
+    </div>
+
     <!-- TAB QUALITE -->
     <div id="tab-qualite" class="tab-content">
       <div class="card">
@@ -386,8 +419,9 @@ function logout() {
 function showTab(name) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  const tabs = ['stats','convertisseur','doublons','qualite','parametres','visiteurs'];
+  const tabs = ['stats','convertisseur','doublons','qualite','parametres','visiteurs','propositions'];
   if (name === 'visiteurs') chargerVisiteurs();
+  if (name === 'propositions') chargerPropositions();
   document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
 }
@@ -431,6 +465,94 @@ async function chargerVisiteurs() {
   } catch (e) {
     msg.textContent = '❌ تعذّرت القراءة (' + e.message + '). تحقّق من قواعد Firebase.';
   }
+}
+
+// ═══════════════════════════════════════════
+// اقتراحات اللاعبين (قراءة وقرار عبر REST، للمشرف فقط)
+// ═══════════════════════════════════════════
+let _props = [];
+function _nrm(t) { return String(t || '').replace(/[\u064B-\u0652\u0670]/g, '').replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627').replace(/\s+/g, ''); }
+function _dejaDansDico(mot, theme) {
+  if (!dicoData) return null;
+  const m = _nrm(mot), t = _nrm(theme);
+  for (const mq of Object.values(dicoData)) {
+    for (const [th, mots] of Object.entries(mq)) {
+      if (_nrm(th) === t && mots.some(x => _nrm(x) === m)) return true;
+    }
+  }
+  return false;
+}
+async function chargerPropositions() {
+  const msg = document.getElementById('prop-msg-a');
+  msg.style.display = 'block'; msg.textContent = '⏳ جارٍ التحميل...';
+  try {
+    const tk = await getTok();
+    if (!tk) { logout(); document.getElementById('login-error').textContent = '❌ الدخول مرفوض. أعد تسجيل الدخول.'; return; }
+    const r = await fetch(DB_URL + '/propositions.json?auth=' + encodeURIComponent(tk));
+    if (!r.ok) throw new Error(r.status);
+    const data = (await r.json()) || {};
+    _props = Object.entries(data).map(([cle, d]) => {
+      const v = Object.values(d.votes || {});
+      return { cle, mot: d.mot || '', theme: d.theme || '', statut: d.statut || 'attente',
+        nb: v.length, deux: v.filter(x => x.type === 'deux').length,
+        fr: v.some(x => x.fr === true), pseudos: [...new Set(v.map(x => x.pseudo))].join(', '),
+        ts: Math.max(0, ...v.map(x => x.ts || 0)) };
+    }).filter(x => x.mot && x.statut === 'attente')
+      .sort((a, b) => (b.deux - a.deux) || (b.nb - a.nb) || (b.ts - a.ts));
+    document.getElementById('prop-body').innerHTML = _props.map((x, i) => {
+      const dd = _dejaDansDico(x.mot, x.theme);
+      return '<tr><td data-l="الكلمة"><strong>' + esc(x.mot) + '</strong></td><td data-l="الموضوع">' + esc(x.theme) +
+        '</td><td data-l="اتفاق اللاعبَين">' + (x.deux ? '✅ ' + x.deux : '–') + '</td><td data-l="اللاعبون" title="' + esc(x.pseudos) + '">' + x.nb +
+        '</td><td data-l="عربية">' + (x.fr ? '✅' : '❓') + '</td><td data-l="القاموس">' + (dd === true ? '⚠ موجودة مسبقًا' : dd === false ? 'غير موجودة' : '?') +
+        '</td><td data-l="القرار"><button class="btn btn-gold btn-sm" onclick="decider(' + i + ',\'retenu\')">مقبولة</button> ' +
+        '<button class="btn btn-sm" onclick="decider(' + i + ',\'refuse\')">مرفوضة</button></td></tr>';
+    }).join('');
+    document.getElementById('prop-table').style.display = _props.length ? 'table' : 'none';
+    msg.textContent = _props.length ? '' : 'لا توجد اقتراحات في الانتظار.';
+    msg.style.display = _props.length ? 'none' : 'block';
+    afficherRetenus(data);
+  } catch (e) {
+    msg.textContent = '❌ تعذّرت القراءة (' + e.message + ').';
+  }
+}
+async function decider(i, statut) {
+  const x = _props[i]; if (!x) return;
+  try {
+    const tk = await getTok();
+    const r = await fetch(DB_URL + '/propositions/' + encodeURIComponent(x.cle) + '/statut.json?auth=' + encodeURIComponent(tk),
+      { method: 'PUT', body: JSON.stringify(statut) });
+    if (!r.ok) throw new Error(r.status);
+    chargerPropositions();
+  } catch (e) { alert('لم يُسجَّل القرار (' + e.message + ')'); }
+}
+function afficherRetenus(data) {
+  const par = {};
+  Object.values(data).forEach(d => {
+    if (d.statut === 'retenu' && d.mot) (par[d.theme] = par[d.theme] || []).push(d.mot);
+  });
+  const lignes = Object.keys(par).sort().map(t => t + ' : ' + par[t].sort().join('، '));
+  document.getElementById('prop-retenus').textContent = lignes.length ? lignes.join('\n') : 'لا توجد كلمات مقبولة.';
+}
+function copierRetenus() {
+  const t = document.getElementById('prop-retenus').textContent;
+  const b = document.getElementById('prop-copier');
+  const ok = () => { b.textContent = '✓ تم النسخ'; setTimeout(() => { b.textContent = '📋 نسخ القائمة'; }, 1500); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(t).then(ok, () => { b.textContent = '❌ تعذّر النسخ'; });
+  } else { b.textContent = '❌ تعذّر النسخ'; }
+}
+async function viderRetenus() {
+  if (!confirm('حذف الكلمات المقبولة والمرفوضة من القائمة (بعد إضافتها إلى Excel)؟')) return;
+  try {
+    const tk = await getTok();
+    const A = encodeURIComponent(tk);
+    const r = await fetch(DB_URL + '/propositions.json?auth=' + A);
+    const data = (await r.json()) || {};
+    const maj = {};
+    Object.entries(data).forEach(([k, d]) => { if (d.statut === 'retenu' || d.statut === 'refuse') maj[k] = null; });
+    await fetch(DB_URL + '/propositions.json?auth=' + A, { method: 'PATCH', body: JSON.stringify(maj) });
+    chargerPropositions();
+  } catch (e) { alert('فشل (' + e.message + ')'); }
 }
 
 // ═══════════════════════════════════════════
