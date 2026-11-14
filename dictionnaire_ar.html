@@ -1694,6 +1694,15 @@ fetch('dictionnaire_ar.json')
     Object.values(data).forEach(themes => {
       Object.values(themes).forEach(mots => { total += mots.length; });
     });
+    // La recherche « القاموس المعجمي » utilise toujours la liste à jour du JSON
+    (function () {
+      const maj = {};
+      Object.values(data).forEach(themes => {
+        Object.entries(themes).forEach(([t, mots]) => { maj[t] = (maj[t] || []).concat(mots); });
+      });
+      Object.keys(DICT_DATA).forEach(t => { if (!(t in maj)) delete DICT_DATA[t]; });
+      Object.entries(maj).forEach(([t, mots]) => { DICT_DATA[t] = mots; });
+    })();
     document.querySelectorAll('.theme-card').forEach(card => {
       const maq = card.getAttribute('data-maquette');
       const nameEl = card.querySelector('.theme-name');
