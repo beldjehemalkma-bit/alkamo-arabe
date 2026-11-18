@@ -4006,6 +4006,7 @@ function _confirmerMotFinalize(word, pIdx) {
   const ev = evalWordSync(word);
   if (ev.valid && ev.score > 0) {
     // Mot accepté : déduire les lettres et repiocher
+    afficherIndice(p, word, ev.score);
     p.score += ev.score;
     G.word.map(w => w.idx).sort((a,b) => b-a).forEach(i => p.letters.splice(i, 1));
     const newL = drawL(10 - p.letters.length);
@@ -4083,9 +4084,135 @@ function confirmerFinPartie() {
 }
 window.confirmerFinPartie = confirmerFinPartie;
 
+// ═══════════════════════════════════════════
+// 💡 INDICE DE FIN DE TOUR (écran seulement) — ne change ni les points ni les règles
+// ═══════════════════════════════════════════
+function _indiceFormeExiste(mot) {
+  const nm = norm(mot);
+  try {
+    if (!window._DICO_NORM || window._DICO_NORM_N !== DICO_LIBRE.size) {
+      window._DICO_NORM = new Set([...DICO_LIBRE].map(m => norm(m)));
+      window._DICO_NORM_N = DICO_LIBRE.size;
+    }
+    if (window._DICO_NORM.has(nm)) return true;
+    return checkWordLocalHunspell(mot) === true;
+  } catch (e) { return false; }
+}
+
+// Cherche, dans le lexique de la case en cours, les meilleurs mots formables avec ces lettres (3 au plus).
+function indiceMeilleursMots(lettres, exclure, cas) {
+  const c = cas || G.curCase;
+  if (!c) return [];
+  let liste;
+  if (c.free) {
+    // Case « mot au choix » : dictionnaire libre du jeu, longueur exigée par la case
+    if (!window._indiceLibre || window._indiceLibreN !== DICO_LIBRE.size) {
+      window._indiceLibre = [...DICO_LIBRE].filter(m => /^[ء-ي]+$/.test(m));
+      window._indiceLibreN = DICO_LIBRE.size;
+    }
+    const mn = c.minL || 3, mx = c.maxL || 10;
+    liste = window._indiceLibre.filter(m => { const l = norm(m).length; return l >= mn && l <= mx && estFormeValide(m); });
+  } else {
+    liste = DICT[c.th] || [];
+  }
+  const stock = {}; let jokers = 0;
+  lettres.forEach(l => { if (l === '*') jokers++; else stock[l] = (stock[l] || 0) + 1; });
+  const vues = new Set(); const trouves = [];
+  const nExclu = exclure ? norm(exclure) : null;
+  liste.forEach(w => {
+    const n = norm(w);
+    if (n.length < 3 || n.length > 10 || vues.has(n) || n === nExclu) return;
+    vues.add(n);
+    const reste = Object.assign({}, stock); let j = jokers, score = 0, ok = true;
+    for (const ch of n) {
+      if (reste[ch] > 0) { reste[ch]--; score += vL(ch); }
+      else if (j > 0) { j--; }
+      else { ok = false; break; }
+    }
+    if (!ok) return;
+    // Les mots de 10 lettres peuvent être tronqués dans une liste : on exige qu'ils existent dans le dictionnaire
+    if (n.length === 10 && !_indiceFormeExiste(w)) return;
+    if (c.bonus) score += c.bonus;
+    if (!c.free && (norm(c.th) === n || (c.id && norm(c.id) === n))) score *= 2;
+    trouves.push({ mot: n, aff: w, score: score });
+  });
+  trouves.sort((a, b) => (b.score - a.score) || (b.mot.length - a.mot.length) || (a.mot < b.mot ? -1 : 1));
+  return trouves.slice(0, 3);
+}
+
+function _indiceAfficher(html) {
+  let el = document.getElementById('indice-fin-tour');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'indice-fin-tour';
+    el.setAttribute('role', 'status');
+    el.setAttribute('dir', 'rtl');
+    el.style.cssText = 'position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:9999;pointer-events:none;' +
+      'width:max-content;max-width:92vw;background:rgba(8,28,18,.96);color:#fff;border:1.5px solid var(--gold,#C8A020);' +
+      'border-radius:14px;padding:12px 16px 12px 40px;font-size:1.05rem;line-height:1.6;font-weight:600;' +
+      'box-shadow:0 6px 24px rgba(0,0,0,.55);text-align:center';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = html + '<span id="indice-fermer" style="position:absolute;left:6px;top:2px;padding:8px 10px;opacity:.8;font-size:1.1rem;cursor:pointer;pointer-events:auto">✕</span>';
+  document.getElementById('indice-fermer').onclick = () => { el.style.display = 'none'; };
+  el.style.display = 'block';
+  // placement : dans la zone libre du cadre du thème sur grand écran, sous le thème sur petit écran ; ne couvre jamais le nom du thème
+  try {
+    const tb = document.querySelector('.theme-box');
+    if (tb) {
+      const r = tb.getBoundingClientRect();
+      if (r.width >= 640) {
+        el.style.transform = 'none';
+        el.style.left = (r.left + r.width * 0.68) + 'px';
+        el.style.top = (r.top + 6) + 'px';
+        el.style.width = (r.width * 0.31) + 'px';
+        el.style.maxWidth = 'none';
+        el.style.fontSize = '.85rem';
+      } else {
+        el.style.transform = 'translateX(-50%)';
+        el.style.left = '50%';
+        el.style.top = Math.max(4, r.bottom + 4) + 'px';
+        el.style.width = 'max-content';
+        el.style.maxWidth = '92vw';
+        el.style.fontSize = '.95rem';
+      }
+    }
+  } catch (e) {}
+  clearTimeout(window._indiceTimer);
+  window._indiceTimer = setTimeout(() => { el.style.display = 'none'; }, 10000);
+}
+
+// joueur : le joueur humain qui vient de jouer ; motJoue : son mot validé (ou null s'il passe / change ses lettres)
+function afficherIndice(joueur, motJoue, scoreJoue) {
+  try {
+    if (!joueur || joueur.isBot || !G.curCase) return;
+    // On fige les lettres et la case maintenant (le tour va changer), et on calcule juste après
+    const lettres = (joueur.letters || []).slice();
+    const cas = G.curCase;
+    setTimeout(function () {
+      try {
+        const liste = indiceMeilleursMots(lettres, motJoue, cas);
+        const b = liste.length ? liste[0] : null;
+        const fmt = liste.map(x => '<span style="color:var(--gold-light,#FAD060)">' + disp(x.aff) + '</span> (' + x.score + ')').join(' · ');
+        let msg;
+        if (motJoue) {
+          if (!b || b.score <= scoreJoue) msg = '🏆 أحسنت! كانت هذه أفضل كلمة ممكنة بحروفك!';
+          else msg = '💡 بحروفك كان بإمكانك أيضًا تكوين :<br>' + fmt;
+        } else {
+          msg = b ? '💡 كان بإمكانك تكوين :<br>' + fmt
+                  : (cas.free ? 'لم تكن هناك أي كلمة بالطول المطلوب ممكنة بحروفك.'
+                              : 'لم تكن هناك أي كلمة من هذا الموضوع ممكنة بحروفك.');
+        }
+        _indiceAfficher(msg);
+      } catch (e) { /* l'indice ne doit jamais gêner le jeu */ }
+    }, 60);
+  } catch (e) { /* idem */ }
+}
+
 function passerTour() {
   if (_modeEnLigne && !estMonTour()) { flashHorsTour(); return; }
   log(curP().name + ' تخطّى دوره', '');
+  afficherIndice(curP(), null, 0);
   G.passCount++;
   G.word = []; G.changeSel = []; G.changeMode = false;
   
@@ -4153,6 +4280,7 @@ function confirmerChange() {
   if (!G.changeSel.length) { log('⚠ اختر حرفًا واحدًا على الأقل!', 'bad'); return; }
   if (!G.letterBag.length) { log('⚠ صندوق الحروف فارغ!', 'bad'); return; }
   const p = curP();
+  afficherIndice(p, null, 0);
   const idxs = [...G.changeSel].sort((a,b) => b-a);
   const old = idxs.map(i => p.letters[i]);
   idxs.forEach(i => { G.letterBag.push(p.letters[i]); p.letters.splice(i, 1); });
